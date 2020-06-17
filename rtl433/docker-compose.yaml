@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  master:
+    image: hertzg/rtl_433:master
+    build:
+      context: ..
+      args:
+        - alpineVersion=latest
+        - rtl433GitRevision=master

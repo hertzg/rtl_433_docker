@@ -1,0 +1,13 @@
+{
+  "author": {
+    "name": "George Kotchlamazashvili",
+    "email": "georgedot@gmail.com"
+  },
+  "name": "rtl_433_docker",
+  "private": true,
+  "devDependencies": {
+    "shelljs": "^0.8.4",
+    "node-fetch": "^2.6.0",
+    "log": "^6.0.0"
+  }
+}
