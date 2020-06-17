@@ -34,4 +34,4 @@ RUN apk add --no-cache libusb librtlsdr
 WORKDIR /root
 COPY --from=builder /build/root/ /
 
-ENTRYPOINT /usr/local/bin/rtl_433
+ENTRYPOINT ["/usr/local/bin/rtl_433"]
