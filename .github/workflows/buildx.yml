@@ -1,0 +1,34 @@
+name: Buildx
+
+on:
+  schedule:
+    - cron: 0 */1 * * *
+  push:
+    branches: [master]
+    tags: 'v*'
+    paths:
+      - '.github/workflows/buildx.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Buildx and push to dockerhub
+    steps:
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+
+      - name: Login
+        run:  echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.2
+
+      - name: Build
+        run: |
+          npm ci
+          node ./build.js 
+          
