@@ -46,7 +46,7 @@ jobs:
 
       - name: Docker Check Manifest
         run: |
-          docker run --rm mplatform/mquery crazymax/diun:latest
+          docker run --rm mplatform/mquery hertzg/rtl_433:latest
 
       - name: Clear
         if: always()
