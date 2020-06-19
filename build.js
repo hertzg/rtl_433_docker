@@ -49,6 +49,7 @@ const buildx = (variant) => {
     "--pull",
     "--progress",
     "plain",
+    ...process.argv.slice(2),
     "./rtl433",
   ];
   const cwd = __dirname;
