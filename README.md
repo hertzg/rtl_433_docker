@@ -115,6 +115,40 @@ Usage:
        Use -d, -g, -R, -X, -F, -M, -r, -w, or -W without argument for more help
 ```
 
+To see all the output formatters you can pass `-F` without arguments
+```
+$ docker run hertzg/rtl_433 -F
+rtl_433 version 20.02 branch  at 202002171252 inputs file rtl_tcp RTL-SDR
+Use -h for usage help and see https://triq.org/ for documentation.
+/usr/local/bin/rtl_433: option requires an argument: F
+Trying conf file at "rtl_433.conf"...
+Trying conf file at "/root/.config/rtl_433/rtl_433.conf"...
+Trying conf file at "/usr/local/etc/rtl_433/rtl_433.conf"...
+Trying conf file at "/etc/rtl_433/rtl_433.conf"...
+/usr/local/bin/rtl_433: option requires an argument: F
+                = Output format option =
+  [-F kv|json|csv|mqtt|influx|syslog|null] Produce decoded output in given format.
+        Without this option the default is KV output. Use "-F null" to remove the default.
+        Append output to file with :<filename> (e.g. -F csv:log.csv), defaults to stdout.
+        Specify MQTT server with e.g. -F mqtt://localhost:1883
+        Add MQTT options with e.g. -F "mqtt://host:1883,opt=arg"
+        MQTT options are: user=foo, pass=bar, retain[=0|1], <format>[=topic]
+        Supported MQTT formats: (default is all)
+          events: posts JSON event data
+          states: posts JSON state data
+          devices: posts device and sensor info in nested topics
+        The topic string will expand keys like [/model]
+        E.g. -F "mqtt://localhost:1883,user=USERNAME,pass=PASSWORD,retain=0,devices=rtl_433[/id]"
+        With MQTT each rtl_433 instance needs a distinct driver selection. The MQTT Client-ID is computed from the driver string.
+        If you use multiple RTL-SDR, perhaps set a serial and select by that (helps not to get the wrong antenna).
+        Specify InfluxDB 2.0 server with e.g. -F "influx://localhost:9999/api/v2/write?org=<org>&bucket=<bucket>,token=<authtoken>"
+        Specify InfluxDB 1.x server with e.g. -F "influx://localhost:8086/write?db=<db>&p=<password>&u=<user>"
+          Additional parameter -M time:unix:usec:utc for correct timestamps in InfluxDB recommended
+        Specify host/port for syslog with e.g. -F syslog:127.0.0.1:1514
+```
+
+You can also use `-d`, `-g`, `-R`, `-X`, `-F`, `-M`, `-r`, `-w`, or `-W` without argument for more help on their usages as described in the help.
+
 ## Example Usages
 
 Use rtl_433 to capture 433Mhz traffic, decode it and send to your local MQTT broker.
