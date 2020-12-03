@@ -44,10 +44,6 @@ jobs:
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache"
 
-      - name: Docker Check Manifest
-        run: |
-          docker run --rm mplatform/mquery hertzg/rtl_433:latest
-
       - name: Clear
         if: always()
         run: |
