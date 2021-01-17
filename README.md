@@ -7,13 +7,30 @@ Images use `alpine` linux as base to keep the final result as slim as possible.
 
 The table below describes the tags for each image:
 
-| Docker Image Tag                                                          | Note                      | rlt_433 git version          | alpine   | amd64 | arm64 | arm/v6 | arm/v7 | ppc64le | 386 |
-| ------------------------------------------------------------------------- | ------------------------- | ---------------------------- | -------- | ----- | ----- | ------ | ------ | ------- | --- |
-| [latest](https://hub.docker.com/r/hertzg/rtl_433/tags?page=1&name=latest) | Build of latest git tag   | latest `refs/tags/<tagname>` | `latest` | ☑     | ☑     | ☑      | ☑      | ☑       | ☑   |
-| [master](https://hub.docker.com/r/hertzg/rtl_433/tags?page=1&name=master) | Build of master branch    | `refs/heads/master`          | `latest` | ☑     | ☑     | ☑      | ☑      | ☑       | ☑   |
-| [&lt;tagname&gt;\*](https://hub.docker.com/r/hertzg/rtl_433/tags?page=1)  | Build of ever release tag | all `refs/tags/<tagname>`    | `latest` | ☑     | ☑     | ☑      | ☑      | ☑       | ☑   |
+| Image Tag                                              | Revision | Base            | Multi-arch |
+| ------------------------------------------------------ | -------- | --------------- | ---------- |
+| `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ☑          |
+| `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ☑          |
+| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ☑          |
+| `:alpine-edge-master`                                  | `master` | `alpine:edge`   | ☑          |
+| `:alpine-edge-latest`                                  | `latest` | `alpine:edge`   | ☑          |
+| `:alpine-edge-<tag>*`                                  | `<tag>*` | `alpine:edge`   | ☑          |
+| `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ☑          |
+| `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ☑          |
+| `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ☑          |
 
-Note: The `latest` tag is an alias for the latest git tag, Image for `master` branch is tagged as `master`
+**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are built from the `master` branch of `rtl_433`.
+
+## Multi-arch
+
+Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each tag has multi-arch manifest supporting following platforms:
+
+- `linux/amd64` ☑
+- `linux/arm64` ☑
+- `linux/arm/v6` ☑
+- `linux/arm/v7` ☑
+- `linux/ppc64le` ☑
+- `linux/386` ☑
 
 ## Usage
 
@@ -116,6 +133,7 @@ Usage:
 ```
 
 To see all the output formatters you can pass `-F` without arguments
+
 ```
 $ docker run hertzg/rtl_433 -F
 rtl_433 version 20.02 branch  at 202002171252 inputs file rtl_tcp RTL-SDR

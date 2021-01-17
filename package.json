@@ -5,9 +5,12 @@
   },
   "name": "rtl_433_docker",
   "private": true,
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
   "devDependencies": {
-    "shelljs": "^0.8.4",
     "node-fetch": "^2.6.1",
-    "log": "^6.0.0"
+    "log": "^6.0.0",
+    "prettier": "^2.2.1"
   }
 }
