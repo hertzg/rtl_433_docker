@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: 0 */12 * * *
   push:
-    branches: [master]
+    branches: [ master ]
     paths:
       - ".github/workflows/buildx.yml"
 
@@ -13,38 +13,26 @@ jobs:
     runs-on: ubuntu-latest
     name: Buildx and push to dockerhub
     steps:
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        id: cache
+      - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2
         with:
           node-version: 14
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Login
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-
-      - name: Build & Push
-        run: |
-          npm ci
-          node ./build.js \
-            --cache-from "type=local,src=/tmp/.buildx-cache" \
-            --cache-to "type=local,dest=/tmp/.buildx-cache"
-
-      - name: Clear
-        if: always()
-        run: |
-          rm -f ${HOME}/.docker/config.json
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: node ./build.js \
+          --cache-from "type=local,src=/tmp/.buildx-cache" \
+          --cache-to "type=local,dest=/tmp/.buildx-cache"
+      - if: always()
+        run: rm -f ${HOME}/.docker/config.json

@@ -9,7 +9,10 @@ const log = (first, ...args) =>
 const {
   IMAGE_BASENAME = "hertzg/rtl_433",
   BUILD_PLATFORMS = "linux/amd64,linux/386,linux/arm64,linux/ppc64le,linux/arm/v7,linux/arm/v6",
+  ALPINE_VERSIONS = "3.13,3.12,3.11,3.10",
 } = process.env;
+
+const alpineVersions = ALPINE_VERSIONS.split(',')
 
 const escape = (str) => str.replace('"', '\\"');
 
@@ -70,16 +73,20 @@ fetch("https://api.github.com/repos/merbanan/rtl_433/tags")
   .then((tags) => tags.map((tag) => tag.name))
   .then(([latestGitTag, ...others]) => [
     variant(["latest", latestGitTag], latestGitTag, "latest"),
-    //variant(["latest-edge", `${latestGitTag}-edge`], latestGitTag, "edge"),
     variant(["master"], "master", "latest"),
-    //variant(["master-edge"], "master", "edge"),
     ...others.flatMap((gitTag) => [
-      variant([gitTag], gitTag, "latest"),
-      //variant([`${gitTag}-edge`], gitTag, "edge"),
+      variant([`${gitTag}`], gitTag, "latest"),
     ]),
+    ...alpineVersions.flatMap((alpine) => [
+      variant([`alpine${alpine}-latest`, `alpine${alpine}-${latestGitTag}`], latestGitTag, alpine),
+      variant([`alpine${alpine}-master`], "master", alpine),
+      ...others.flatMap((gitTag) => [
+        variant([`alpine${alpine}-${gitTag}`], gitTag, alpine),
+      ]),
+    ])
   ])
   .then((variants) => {
-    log("Build all variants");
+    log("Build all variants", variants);
     return buildParallel(variants, buildx);
   })
   .then(() => console.log("Done"))
