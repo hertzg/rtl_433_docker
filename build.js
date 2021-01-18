@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const {
   IMAGE_BASENAME = "hertzg/rtl_433",
   BUILD_PLATFORMS = "linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x",
-  ALPINE_VERSIONS = "3.12",
+  ALPINE_VERSIONS = "3.13,3.12",
 } = process.env;
 
 const alpineVersions = ALPINE_VERSIONS.split(",");
@@ -48,7 +48,11 @@ fetchSourceGitTags()
       latest,
       "latest"
     ), // latest - latest
-    ...variantsFromRevisions(revisions, "latest", (revision) => [revision]), // <revision>* - latest
+    ...variantsFromRevisions(revisions, "latest", (revision) => [
+        revision,
+        `alpine-${revision}`,
+        `alpine-latest-${revision}`
+    ]), // <revision>* - latest
 
     /** Other Alpines: :alpine<version>-* **/
     ...alpineVersions.flatMap((alpine) => [
