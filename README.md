@@ -12,9 +12,6 @@ The table below describes the tags for each image:
 | `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ☑          |
 | `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ☑          |
 | `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ☑          |
-| `:alpine-edge-master`                                  | `master` | `alpine:edge`   | ☑          |
-| `:alpine-edge-latest`                                  | `latest` | `alpine:edge`   | ☑          |
-| `:alpine-edge-<tag>*`                                  | `<tag>*` | `alpine:edge`   | ☑          |
 | `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ☑          |
 | `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ☑          |
 | `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ☑          |
@@ -31,6 +28,7 @@ Images are ready to run on different architectures. Due to popularity of small "
 - `linux/arm/v7` ☑
 - `linux/ppc64le` ☑
 - `linux/386` ☑
+- `linux/s390x` ☑
 
 ## Usage
 
