@@ -1,12 +1,11 @@
 name: Buildx
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: 0 */12 * * *
   push:
     branches: [master]
-    paths:
-      - ".github/workflows/buildx.yml"
 
 jobs:
   docker:
