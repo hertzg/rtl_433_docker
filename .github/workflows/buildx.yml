@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: 0 */12 * * *
+  pull_request:
+    branches: [master]
   push:
     branches: [master]
 
@@ -26,6 +28,22 @@ jobs:
 
       - id: debian
         run: node ./images/debian/build.js
+
+      - if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: builds
+          message: |
+            # Alpine
+            ```
+            ${{ toJSON(fromJSON(steps.alpine.outputs.builds)) }}
+            ```
+
+            # Debian
+            ```
+            ${{ toJSON(fromJSON(steps.debian.outputs.builds)) }}
+            ```
 
   docker-build-alpine:
     needs:
@@ -52,7 +70,8 @@ jobs:
             ${{ runner.os }}-buildx-alpine-
             ${{ runner.os }}-buildx-
       - uses: actions/checkout@v2
-      - uses: docker/build-push-action@v2
+      - if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/build-push-action@v2
         with:
           context: ./images/alpine/build-context
           file: ./images/alpine/build-context/Dockerfile
@@ -89,7 +108,8 @@ jobs:
             ${{ runner.os }}-buildx-debian-
             ${{ runner.os }}-buildx-
       - uses: actions/checkout@v2
-      - uses: docker/build-push-action@v2
+      - if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/build-push-action@v2
         with:
           context: ./images/debian/build-context
           file: ./images/debian/build-context/Dockerfile
