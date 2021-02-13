@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  master:
+    image: hertzg/rtl_433:deban-master
+    build:
+      context: ../..
+      args:
+        - debianVersion=latest
+        - rtl433GitRevision=master

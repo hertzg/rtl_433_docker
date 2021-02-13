@@ -2,9 +2,9 @@ version: '3'
 
 services:
   master:
-    image: hertzg/rtl_433:master
+    image: hertzg/rtl_433:alpine-master
     build:
-      context: ..
+      context: ../..
       args:
         - alpineVersion=latest
         - rtl433GitRevision=master

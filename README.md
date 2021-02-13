@@ -7,26 +7,36 @@ Images use `alpine` linux as base to keep the final result as slim as possible.
 
 The table below describes the tags for each image:
 
+## Alpine based images
+
 | Image Tag                                              | Revision | Base            | Multi-arch |
 | ------------------------------------------------------ | -------- | --------------- | ---------- |
 | `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ☑          |
 | `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ☑          |
 | `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ☑          |
+| `:alpine-3.13-master`                                  | `master` | `alpine:3.13`   | ☑          |
+| `:alpine-3.13-latest`                                  | `latest` | `alpine:3.13`   | ☑          |
+| `:alpine-3.13-<tag>*`                                  | `<tag>*` | `alpine:3.13`   | ☑          |
 | `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ☑          |
 | `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ☑          |
 | `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ☑          |
 
-**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are built from the `master` branch of `rtl_433`.
+**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
+built from the `master` branch of `rtl_433`.
+
+## Debian based images
 
 ## Multi-arch
 
-Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each tag has multi-arch manifest supporting following platforms:
+Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each
+tag has multi-arch manifest supporting following platforms:
 
 - `linux/amd64` ☑
 - `linux/arm64` ☑
 - `linux/arm/v6` ☑
 - `linux/arm/v7` ☑
 - `linux/ppc64le` ☑
+- `linux/mips64le` ⚠️ (`debian` only)
 - `linux/386` ☑
 - `linux/s390x` ☑
 
@@ -57,8 +67,8 @@ Next we need to start the container and share the `/dev/bus/usb/001/003` device 
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433
 ```
 
-The `--device` or `-d` flag will share the host usb device to the container it will most likely be unusable by the
-host or any other containers.
+The `--device` or `-d` flag will share the host usb device to the container it will most likely be unusable by the host
+or any other containers.
 
 To use specifc version of `rtl_433` use the docker image tags described from the table above
 
@@ -69,7 +79,8 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:20.02
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:18.05
 ```
 
-To pass arguments to `rtl_433` executable use can use the docker commands by appending them at the end of the run command
+To pass arguments to `rtl_433` executable use can use the docker commands by appending them at the end of the run
+command
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -h
@@ -163,7 +174,8 @@ Trying conf file at "/etc/rtl_433/rtl_433.conf"...
         Specify host/port for syslog with e.g. -F syslog:127.0.0.1:1514
 ```
 
-You can also use `-d`, `-g`, `-R`, `-X`, `-F`, `-M`, `-r`, `-w`, or `-W` without argument for more help on their usages as described in the help.
+You can also use `-d`, `-g`, `-R`, `-X`, `-F`, `-M`, `-r`, `-w`, or `-W` without argument for more help on their usages
+as described in the help.
 
 ## Example Usages
 
