@@ -36,12 +36,12 @@ jobs:
           header: builds
           message: |
             # Alpine
-            ```
+            ```json
             ${{ toJSON(fromJSON(steps.alpine.outputs.builds)) }}
             ```
 
             # Debian
-            ```
+            ```json
             ${{ toJSON(fromJSON(steps.debian.outputs.builds)) }}
             ```
 
