@@ -11,34 +11,49 @@ The table below describes the tags for each image:
 
 | Image Tag                                              | Revision | Base            | Multi-arch |
 | ------------------------------------------------------ | -------- | --------------- | ---------- |
-| `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ☑          |
-| `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ☑          |
-| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ☑          |
-| `:alpine-3.13-master`                                  | `master` | `alpine:3.13`   | ☑          |
-| `:alpine-3.13-latest`                                  | `latest` | `alpine:3.13`   | ☑          |
-| `:alpine-3.13-<tag>*`                                  | `<tag>*` | `alpine:3.13`   | ☑          |
-| `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ☑          |
-| `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ☑          |
-| `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ☑          |
+| `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ✔️         |
+| `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ✔️         |
+| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ✔️         |
+| `:alpine-3.13-master`                                  | `master` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.13-latest`                                  | `latest` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.13-<tag>*`                                  | `<tag>*` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ✔️         |
+| `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ✔️         |
+| `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ✔️         |
 
 **Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
 built from the `master` branch of `rtl_433`.
 
 ## Debian based images
 
+| Image Tag                                  | Revision | Base              | Multi-arch |
+| ------------------------------------------ | -------- | ----------------- | ---------- |
+| `:debian-master`/ `:debian-latest-master`  | `master` | `debian:latest`   | ✔️         |
+| `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ✔️         |
+| `:debian-<tag>*` / `:debian-latest-<tag>*` | `<tag>*` | `debian:latest`   | ✔️         |
+| `:debian-bullseye-master`                  | `master` | `debian:bullseye` | ✔️         |
+| `:debian-bullseye-latest`                  | `latest` | `debian:bullseye` | ✔️         |
+| `:debian-bullseye-<tag>*`                  | `<tag>*` | `debian:bullseye` | ✔️         |
+| `:debian-buster-master`                    | `master` | `debian:buster`   | ✔️         |
+| `:debian-buster-latest`                    | `latest` | `debian:buster`   | ✔️         |
+| `:debian-buster-<tag>*`                    | `<tag>*` | `debian:buster`   | ✔️         |
+
 ## Multi-arch
 
 Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each
 tag has multi-arch manifest supporting following platforms:
 
-- `linux/amd64` ☑
-- `linux/arm64` ☑
-- `linux/arm/v6` ☑
-- `linux/arm/v7` ☑
-- `linux/ppc64le` ☑
-- `linux/mips64le` ⚠️ (`debian` only)
-- `linux/386` ☑
-- `linux/s390x` ☑
+| Architecture     | Alpine | Debian |
+| ---------------- | ------ | ------ |
+| `linux/386`      | ✔️     | ✔️     |
+| `linux/amd64`    | ✔️     | ✔️     |
+| `linux/arm/v5`   | ️❌    | ✔️     |
+| `linux/arm/v6`   | ✔️     | ❌️    |
+| `linux/arm/v7`   | ✔️     | ✔️     |
+| `linux/arm64/v8` | ✔️     | ✔️     |
+| `linux/mips64le` | ❌️    | ✔️     |
+| `linux/ppc64le`  | ✔️     | ✔️     |
+| `linux/s390x`    | ✔️     | ️✔️    |
 
 ## Usage
 

@@ -2,8 +2,17 @@ const fetch = require("node-fetch");
 
 const {
   IMAGE_BASENAME = "hertzg/rtl_433",
-  BUILD_PLATFORMS = "linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/mips64le",
-  DEBIAN_VERSIONS = "bullseye,buster,stretch,jessie",
+  BUILD_PLATFORMS = [
+    "linux/386",
+    "linux/amd64",
+    "linux/arm/v5",
+    "linux/arm/v7",
+    "linux/arm64/v8",
+    "linux/mips64le",
+    "linux/ppc64le",
+    "linux/s390x",
+  ].join(","),
+  DEBIAN_VERSIONS = "bullseye,buster",
 } = process.env;
 
 const debianVersions = DEBIAN_VERSIONS.split(",");
