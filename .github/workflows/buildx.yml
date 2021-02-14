@@ -63,7 +63,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.meta.alpineVersion }}-${{ matrix.meta.revision }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-${{ matrix.meta.revision }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-${{ matrix.meta.revision }}-
             ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-

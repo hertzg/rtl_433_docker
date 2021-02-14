@@ -30,11 +30,11 @@ const variantsFromRevisions = (revisions, base, toImageTags) =>
     variant(toImageTags(revision, base), revision, base)
   );
 
-const fetchSourceGitTags = () =>
-  fetch("https://api.github.com/repos/merbanan/rtl_433/tags")
-    .then((res) => res.json())
-    .then((tags) => tags.map((tag) => tag.name))
-    .then(([latest, ...tags]) => ({ latest, tags }));
+const fetchSourceGitTags = () => Promise.resolve({ latest: "20.02", tags: [] });
+// fetch("https://api.github.com/repos/merbanan/rtl_433/tags")
+//   .then((res) => res.json())
+//   .then((tags) => tags.map((tag) => tag.name))
+//   .then(([latest, ...tags]) => ({ latest, tags }));
 
 fetchSourceGitTags()
   .then(({ latest, tags: revisions }) => [
