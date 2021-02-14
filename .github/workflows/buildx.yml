@@ -15,8 +15,8 @@ jobs:
   docker:
     runs-on: ubuntu-20.04
     outputs:
-      debian: ${{ steps.debian.outputs.builds }}
       apline: ${{ steps.alpine.outputs.builds }}
+      debian: ${{ steps.debian.outputs.builds }}
     steps:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2

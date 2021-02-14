@@ -70,7 +70,7 @@ fetchSourceGitTags()
     ]),
   ])
   .then((variants) => {
-    console.log(variants);
+    //console.log(variants);
     console.log(
       `::set-output name=builds::${JSON.stringify({ include: variants })}`
     );
