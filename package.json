@@ -5,12 +5,14 @@
   },
   "name": "rtl_433_docker",
   "private": true,
+  "scripts": {
+    "builds": "node ./images/build.js"
+  },
   "dependencies": {
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "node-fetch": "^2.6.1",
-    "log": "^6.0.0",
     "prettier": "^2.2.1"
   }
 }
