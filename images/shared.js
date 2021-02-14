@@ -3,6 +3,7 @@ const matrixEntryConverter = () => async (build) => {
   const [cacheKey, restoreKeys] = build.cacheKeys
   return {
     name: `buildx (${build.id})`,
+    runsOn: 'ubuntu-20.04',
     cache: {
       path: buildxCachePath,
       cacheKey: cacheKey,

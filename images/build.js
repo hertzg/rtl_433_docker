@@ -1,5 +1,4 @@
-const { fetchVersions, getMeta, build, pick } = require('../utils')
-const _ = require('lodash')
+const { fetchVersions, makeOutput, getMeta, build, pick } = require('../utils')
 
 const flavourConfigs = {
   alpine: require('./alpine/config'),
@@ -48,6 +47,11 @@ const tagOverallLatest = async ({ candidates, rest }) => {
   ]
 }
 
+const outputBuilds = (builds) => {
+  console.log(makeOutput('builds', JSON.stringify(builds)))
+  return builds
+}
+
 const generateEntries = async (builds) => {
   return await Promise.all(
     builds.map(async (build) => ({
@@ -60,11 +64,7 @@ const generateEntries = async (builds) => {
   )
 }
 
-const createMatrices = async (builds) => {
-  const flavours = _.groupBy(builds, (build) => getMeta(build).flavour)
-  console.log({ flavours })
-  return flavours
-}
+const createMatrices = async (builds) => ({ matrix: builds })
 
 const createOutputs = async (matrices) =>
   Object.fromEntries(
@@ -75,16 +75,17 @@ const createOutputs = async (matrices) =>
   )
 
 const writeOutputs = async (outputs) => {
-  console.log({ outputs })
-
   Object.entries(outputs).forEach(([name, output]) => {
-    console.log(`::set-output name=${name}::${JSON.stringify(output)}`)
+    console.log(makeOutput(name, JSON.stringify(output)))
   })
+
+  return outputs
 }
 
 fetchVersions('merbanan/rtl_433', ['master'])
   .then(generateBuild)
   .then(tagOverallLatest)
+  .then(outputBuilds)
   .then(generateEntries)
   .then(createMatrices)
   .then(createOutputs)

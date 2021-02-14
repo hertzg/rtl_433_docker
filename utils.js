@@ -53,4 +53,6 @@ const pick = (array, predicate) =>
     [[], []]
   )
 
-module.exports = { build, pick, getMeta, fetchVersions }
+const makeOutput = (name, value) => `::set-output name=${name}::${value}`
+
+module.exports = { build, pick, getMeta, makeOutput, fetchVersions }
