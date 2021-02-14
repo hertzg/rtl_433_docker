@@ -36,7 +36,7 @@ jobs:
           message: |
             # Builds
             ```json
-            ${{ toJSON(fromJSON(steps.builds.outputs.builds.*.id)) }}
+            ${{ toJSON(fromJSON(steps.builds.outputs.builds).*.id) }}
             ```
 
             # Matrixmatrix
