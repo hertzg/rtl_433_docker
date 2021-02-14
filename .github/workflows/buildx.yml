@@ -39,11 +39,6 @@ jobs:
             ${{ toJSON(fromJSON(steps.builds.outputs.builds).*.id) }}
             ```
 
-            # Matrixmatrix
-            ```json
-            ${{ toJSON(fromJSON(steps.builds.outputs.matrix)) }}
-            ```
-
   docker-build:
     needs:
       - docker
