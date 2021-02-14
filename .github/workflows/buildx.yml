@@ -73,7 +73,7 @@ jobs:
           context: ${{ matrix.buildx.context }}
           file: ${{ matrix.buildx.file }}
           build-args: ${{ matrix.buildx.buildArgs }}
-          paltforms: ${{ matrix.buildx.paltforms }}
+          platforms: ${{ matrix.buildx.paltforms }}
           pull: true,
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }},
           cache-from: ${{ matrix.buildx.cacheFrom }}
