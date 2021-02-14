@@ -15,21 +15,17 @@ jobs:
   docker:
     runs-on: ubuntu-20.04
     outputs:
-      alpine: ${{ steps.alpine.outputs.builds }}
-      debian: ${{ steps.debian.outputs.builds }}
+      builds: ${{ steps.builds.outputs.builds }}
+      matrix: ${{ steps.builds.outputs.matrix }}
     steps:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
           node-version: 14
       - uses: actions/checkout@v2
-      - uses: bahmutov/npm-install@v1
 
-      - id: alpine
-        run: node ./images/alpine/build.js
-
-      - id: debian
-        run: node ./images/debian/build.js
+      - id: builds
+        run: yarn builds
 
       - if: ${{ github.event_name == 'pull_request' }}
         uses: marocchino/sticky-pull-request-comment@v2
@@ -37,94 +33,48 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: builds
           message: |
-            # Alpine
+            # Builds
             ```json
-            ${{ toJSON(fromJSON(steps.alpine.outputs.builds)) }}
+            ${{ toJSON(fromJSON(steps.builds.outputs.builds).*.id) }}
             ```
 
-            # Debian
-            ```json
-            ${{ toJSON(fromJSON(steps.debian.outputs.builds)) }}
-            ```
-
-  docker-build-alpine:
+  docker-build:
+    name: ${{ matrix.name }}
     needs:
       - docker
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.runsOn }}
     strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.alpine) }}
+      matrix: ${{ fromJSON(needs.docker.outputs.matrix) }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/setup-qemu-action@v1
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/setup-buildx-action@v1
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/login-action@v1
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-${{ matrix.meta.revision }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-${{ matrix.meta.revision }}-
-            ${{ runner.os }}-buildx-alpine-${{ matrix.meta.alpineVersion }}-
-            ${{ runner.os }}-buildx-alpine-
-            ${{ runner.os }}-buildx-
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: ./images/alpine/build-context
-          file: ./images/alpine/build-context/Dockerfile
-          build-args: ${{ matrix.buildArgs }}
-          platforms: ${{ matrix.platforms }}
-          push: true
-          pull: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ matrix.tags }}
 
-  docker-build-debian:
-    needs:
-      - docker
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.debian) }}
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v2
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/setup-qemu-action@v1
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/setup-buildx-action@v1
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/login-action@v1
+      - id: cacheKeys
+        env:
+          KEYS: ${{ toJSON(matrix.cache.restoreKeys) }}
+        run: |
+          echo "::set-output name=entries::$(echo $KEYS | jq -cr '. | map("${{ runner.os }}-" + .) + ["${{ runner.os }}-"]')"
+
+      - uses: actions/cache@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: actions/cache@v2
+          path: ${{ matrix.cache.path }}
+          key: ${{ runner.os }}-buildx-${{ matrix.cache.cacheKey }}-${{ github.sha }}
+          restore-keys: ${{ join(fromJSON(steps.cacheKeys.outputs.entries), '\n') }}
+
+      - uses: docker/build-push-action@v2
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-debian-${{ matrix.meta.debianVersion }}-${{ matrix.meta.revision }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-debian-${{ matrix.meta.debianVersion }}-${{ matrix.meta.revision }}-
-            ${{ runner.os }}-buildx-debian-${{ matrix.meta.debianVersion }}-
-            ${{ runner.os }}-buildx-debian-
-            ${{ runner.os }}-buildx-
-      - if: ${{ github.event_name == 'push' && 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: ./images/debian/build-context
-          file: ./images/debian/build-context/Dockerfile
-          build-args: ${{ matrix.buildArgs }}
-          platforms: ${{ matrix.platforms }}
-          push: true
-          pull: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ matrix.tags }}
+          context: ${{ matrix.buildx.context }}
+          file: ${{ matrix.buildx.file }}
+          build-args: ${{ matrix.buildx.buildArgs }}
+          platforms: ${{ matrix.buildx.paltforms }}
+          pull: true,
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }},
+          cache-from: ${{ matrix.buildx.cacheFrom }}
+          cache-to: ${{ matrix.buildx.cacheTo }}
+          tags: ${{ matrix.buildx.tags }}
