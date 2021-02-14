@@ -2,7 +2,15 @@ const { fetchSourceGitTags } = require("../../utils");
 
 const {
   IMAGE_BASENAME = "hertzg/rtl_433",
-  BUILD_PLATFORMS = "linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x",
+  BUILD_PLATFORMS = [
+    "linux/386",
+    "linux/amd64",
+    "linux/arm/v6",
+    "linux/arm/v7",
+    "linux/arm64/v8",
+    "linux/ppc64le",
+    "linux/s390x",
+  ].join(","),
   ALPINE_VERSIONS = "3.13,3.12",
 } = process.env;
 

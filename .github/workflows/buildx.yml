@@ -5,9 +5,11 @@ on:
   schedule:
     - cron: 0 */12 * * *
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
   push:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   docker:
@@ -49,7 +51,8 @@ jobs:
       - docker
     runs-on: ubuntu-20.04
     strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.alpine) }}
+      matrix:
+        include: ${{ fromJSON(needs.docker.outputs.alpine).include }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
