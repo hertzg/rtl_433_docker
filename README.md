@@ -53,7 +53,7 @@ tag has multi-arch manifest supporting following platforms:
 | `linux/arm64/v8` | ✔️     | ✔️     |
 | `linux/mips64le` | ❌️    | ✔️     |
 | `linux/ppc64le`  | ✔️     | ✔️     |
-| `linux/s390x`    | ✔️     | ️✔️    |
+| `linux/s390x`    | ✔️     | ️➖    |
 
 ➖ : Supported by the base image but not being built (skipped)
 

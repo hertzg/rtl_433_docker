@@ -5,12 +5,12 @@ const {
   BUILD_PLATFORMS = [
     "linux/386",
     "linux/amd64",
-    // "linux/arm/v5", // fails to install dependencies
+    // "linux/arm/v5", // fails to install build dependencies
     "linux/arm/v7",
     "linux/arm64/v8",
     "linux/mips64le",
     "linux/ppc64le",
-    "linux/s390x",
+    // "linux/s390x", // fails to install runtime dependencies
   ].join(","),
   DEBIAN_VERSIONS = "bullseye,buster",
 } = process.env;
