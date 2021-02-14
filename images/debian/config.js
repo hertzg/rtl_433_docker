@@ -72,5 +72,8 @@ module.exports = {
       ),
     ]
   },
-  matrixEntry: matrixEntryConverter(),
+  matrixEntry: matrixEntryConverter({
+    context: './images/debian/build-context',
+    file: './images/debian/build-context/Dockerfile',
+  }),
 }

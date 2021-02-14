@@ -71,5 +71,8 @@ module.exports = {
       ),
     ]
   },
-  matrixEntry: matrixEntryConverter(),
+  matrixEntry: matrixEntryConverter({
+    context: './images/alpine/build-context',
+    file: './images/alpine/build-context/Dockerfile',
+  }),
 }
