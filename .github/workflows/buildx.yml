@@ -40,9 +40,10 @@ jobs:
             ```
 
   docker-build:
+    name: ${{ matrix.name }}
     needs:
       - docker
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.runsOn }}
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.matrix) }}
       fail-fast: false
