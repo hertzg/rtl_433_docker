@@ -93,7 +93,8 @@ jobs:
       - docker
     runs-on: ubuntu-20.04
     strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.debian) }}
+      matrix:
+        include: ${{ fromJSON(needs.docker.outputs.debian).include }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
