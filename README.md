@@ -55,7 +55,7 @@ tag has multi-arch manifest supporting following platforms:
 | `linux/ppc64le`  | ✔️     | ✔️     |
 | `linux/s390x`    | ✔️     | ️➖    |
 
-➖ : Supported by the base image but not being built (skipped)
+➖ : Supported by the base image but not being built (you could think of it as ❌️)
 
 ## Usage
 
