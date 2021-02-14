@@ -15,8 +15,8 @@ jobs:
   docker:
     runs-on: ubuntu-20.04
     outputs:
-      apline: ${{ toJSON(fromJSON(steps.alpine.outputs.builds)) }}
-      debian: ${{ toJSON(fromJSON(steps.debian.outputs.builds)) }}
+      apline: ${{ steps.alpine.outputs.builds }}
+      debian: ${{ steps.debian.outputs.builds }}
     steps:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
@@ -51,8 +51,7 @@ jobs:
       - docker
     runs-on: ubuntu-20.04
     strategy:
-      matrix:
-        include: ${{ fromJSON(needs.docker.outputs.alpine).include }}
+      matrix: ${{ needs.docker.outputs.alpine }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
@@ -93,8 +92,7 @@ jobs:
       - docker
     runs-on: ubuntu-20.04
     strategy:
-      matrix:
-        include: ${{ fromJSON(needs.docker.outputs.debian).include }}
+      matrix: ${{ needs.docker.outputs.debian }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
