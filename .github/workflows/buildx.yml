@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       apline: ${{ steps.alpine.outputs.builds }}
-#      debian: ${{ steps.debian.outputs.builds }}
+    #      debian: ${{ steps.debian.outputs.builds }}
     steps:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
@@ -27,6 +27,15 @@ jobs:
 
       - id: alpine
         run: node ./images/alpine/build.js
+
+  debug:
+    needs:
+      - docker
+    runs-on: ubuntu-20.04
+    steps:
+      - env:
+          OUTPUTS: ${{ toJSON(needs.docker.outputs) }}
+        run: echo $OUTPUTS
 
 #      - id: debian
 #        run: node ./images/debian/build.js
