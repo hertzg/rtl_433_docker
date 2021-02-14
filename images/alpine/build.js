@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const { fetchSourceGitTags } = require("../../utils");
 
 const {
   IMAGE_BASENAME = "hertzg/rtl_433",
@@ -29,12 +29,6 @@ const variantsFromRevisions = (revisions, base, toImageTags) =>
   revisions.map((revision) =>
     variant(toImageTags(revision, base), revision, base)
   );
-
-const fetchSourceGitTags = () => Promise.resolve({ latest: "20.02", tags: [] });
-// fetch("https://api.github.com/repos/merbanan/rtl_433/tags")
-//   .then((res) => res.json())
-//   .then((tags) => tags.map((tag) => tag.name))
-//   .then(([latest, ...tags]) => ({ latest, tags }));
 
 fetchSourceGitTags()
   .then(({ latest, tags: revisions }) => [
