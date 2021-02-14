@@ -7,7 +7,7 @@ const matrixEntryConverter = () => async (build) => {
     cache: {
       path: buildxCachePath,
       cacheKey: cacheKey,
-      restoreKeys: restoreKeys,
+      restoreKeys: build.cacheKeys,
     },
     buildx: {
       context: './images/debian/build-context',
