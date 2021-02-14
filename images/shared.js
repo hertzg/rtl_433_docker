@@ -12,14 +12,12 @@ const matrixEntryConverter = () => async (build) => {
     buildx: {
       context: './images/debian/build-context',
       file: './images/debian/build-context/Dockerfile',
-      'build-args': Object.entries(build.buildArgs)
+      buildArgs: Object.entries(build.buildArgs)
         .map(([key, value]) => `${key}=${value}`)
         .join('\n'),
       paltforms: build.platforms.join(','),
-      push: true,
-      pull: true,
-      'cache-from': `type=local,src=${buildxCachePath}`,
-      'cache-to': `type=local,dest=${buildxCachePath}`,
+      cacheFrom: `type=local,src=${buildxCachePath}`,
+      cacheTo: `type=local,dest=${buildxCachePath}`,
       tags: build.fullTags.join('\n'),
     },
   }
