@@ -5,7 +5,7 @@ const {
   BUILD_PLATFORMS = [
     "linux/386",
     "linux/amd64",
-    "linux/arm/v5",
+    // "linux/arm/v5", // fails to install dependencies
     "linux/arm/v7",
     "linux/arm64/v8",
     "linux/mips64le",
