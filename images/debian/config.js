@@ -19,7 +19,7 @@ const variant = (version, debian, override = (s) => s) =>
       rtl433GitVersion: version
     },
     platforms: [
-      // 'linux/386', // fails to install build dependencies
+      'linux/386', // fails to install build dependencies
       'linux/amd64',
       // "linux/arm/v5", // fails to install build dependencies
       'linux/arm/v7',

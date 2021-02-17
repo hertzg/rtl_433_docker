@@ -45,7 +45,7 @@ tag has multi-arch manifest supporting following platforms:
 
 | Architecture     | Alpine | Debian |
 | ---------------- | ------ | ------ |
-| `linux/386`      | ✔️     | ➖     |
+| `linux/386`      | ✔️     | ✔️     |
 | `linux/amd64`    | ✔️     | ✔️     |
 | `linux/arm/v5`   | ️❌    | ➖     |
 | `linux/arm/v6`   | ✔️     | ❌️    |
