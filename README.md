@@ -9,34 +9,34 @@ The table below describes the tags for each image:
 
 ## Alpine based images
 
-| Image Tag                                              | Revision | Base            | Multi-arch |
-| ------------------------------------------------------ | -------- | --------------- | ---------- |
-| `:master` / `:alpine-master`/ `:alpine-latest-master`  | `master` | `alpine:latest` | ✔️         |
-| `:latest` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ✔️         |
-| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*` | `<tag>*` | `alpine:latest` | ✔️         |
-| `:alpine-3.13-master`                                  | `master` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.13-latest`                                  | `latest` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.13-<tag>*`                                  | `<tag>*` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.12-master`                                  | `master` | `alpine:3.12`   | ✔️         |
-| `:alpine-3.12-latest`                                  | `latest` | `alpine:3.12`   | ✔️         |
-| `:alpine-3.12-<tag>*`                                  | `<tag>*` | `alpine:3.12`   | ✔️         |
+| Image Tag                                                          | Revision | Base            | Multi-arch |
+| ------------------------------------------------------------------ | -------- | --------------- | ---------- |
+| `:latest` / `:alpine` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ✔️         |
+| `:master` / `:alpine-master`/ `:alpine-latest-master`              | `master` | `alpine:latest` | ✔️         |
+| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*`             | `<tag>*` | `alpine:latest` | ✔️         |
+| `:alpine-3.13-master`                                              | `master` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.13-latest`                                              | `latest` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.13-<tag>*`                                              | `<tag>*` | `alpine:3.13`   | ✔️         |
+| `:alpine-3.12-master`                                              | `master` | `alpine:3.12`   | ✔️         |
+| `:alpine-3.12-latest`                                              | `latest` | `alpine:3.12`   | ✔️         |
+| `:alpine-3.12-<tag>*`                                              | `<tag>*` | `alpine:3.12`   | ✔️         |
 
 **Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
 built from the `master` branch of `rtl_433`.
 
 ## Debian based images
 
-| Image Tag                                  | Revision | Base              | Multi-arch |
-| ------------------------------------------ | -------- | ----------------- | ---------- |
-| `:debian-master`/ `:debian-latest-master`  | `master` | `debian:latest`   | ✔️         |
-| `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ✔️         |
-| `:debian-<tag>*` / `:debian-latest-<tag>*` | `<tag>*` | `debian:latest`   | ✔️         |
-| `:debian-bullseye-master`                  | `master` | `debian:bullseye` | ✔️         |
-| `:debian-bullseye-latest`                  | `latest` | `debian:bullseye` | ✔️         |
-| `:debian-bullseye-<tag>*`                  | `<tag>*` | `debian:bullseye` | ✔️         |
-| `:debian-buster-master`                    | `master` | `debian:buster`   | ✔️         |
-| `:debian-buster-latest`                    | `latest` | `debian:buster`   | ✔️         |
-| `:debian-buster-<tag>*`                    | `<tag>*` | `debian:buster`   | ✔️         |
+| Image Tag                                              | Revision | Base              | Multi-arch |
+| ------------------------------------------------------ | -------- | ----------------- | ---------- |
+| `:debian` / `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ✔️         |
+| `:debian-master`/ `:debian-latest-master`              | `master` | `debian:latest`   | ✔️         |
+| `:debian-<tag>*` / `:debian-latest-<tag>*`             | `<tag>*` | `debian:latest`   | ✔️         |
+| `:debian-bullseye-master`                              | `master` | `debian:bullseye` | ✔️         |
+| `:debian-bullseye-latest`                              | `latest` | `debian:bullseye` | ✔️         |
+| `:debian-bullseye-<tag>*`                              | `<tag>*` | `debian:bullseye` | ✔️         |
+| `:debian-buster-master`                                | `master` | `debian:buster`   | ✔️         |
+| `:debian-buster-latest`                                | `latest` | `debian:buster`   | ✔️         |
+| `:debian-buster-<tag>*`                                | `<tag>*` | `debian:buster`   | ✔️         |
 
 ## Multi-arch
 
@@ -45,7 +45,7 @@ tag has multi-arch manifest supporting following platforms:
 
 | Architecture     | Alpine | Debian |
 | ---------------- | ------ | ------ |
-| `linux/386`      | ✔️     | ✔️     |
+| `linux/386`      | ✔️     | ➖     |
 | `linux/amd64`    | ✔️     | ✔️     |
 | `linux/arm/v5`   | ️❌    | ➖     |
 | `linux/arm/v6`   | ✔️     | ❌️    |
@@ -217,20 +217,20 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -Mtime:
 same as above but for `docker-compose.yaml` using MQTT and InfluxDB from the same compose stack
 
 ```yaml
-version: "3"
+version: '3'
 services:
   rtl433:
     image: hertzg/rtl_433:latest
     devices:
-      - "/dev/bus/usb/001/003"
+      - '/dev/bus/usb/001/003'
     command:
-      - "-Mtime:unix:usec:utc"
-      - "-Mbits"
-      - "-Mlevel"
-      - "-Mprotocol"
-      - "-Mstats:2:300"
-      - "-Fmqtt://mosquitto:1883,retain=1"
-      - "-Finflux://influxdb:8086/write?db=rtl433"
+      - '-Mtime:unix:usec:utc'
+      - '-Mbits'
+      - '-Mlevel'
+      - '-Mprotocol'
+      - '-Mstats:2:300'
+      - '-Fmqtt://mosquitto:1883,retain=1'
+      - '-Finflux://influxdb:8086/write?db=rtl433'
 
   mosquitto: ...
 
