@@ -45,7 +45,7 @@ tag has multi-arch manifest supporting following platforms:
 
 | Architecture     | Alpine | Debian |
 | ---------------- | ------ | ------ |
-| `linux/386`      | ✔️     | ✔️     |
+| `linux/386`      | ✔️     | ➖     |
 | `linux/amd64`    | ✔️     | ✔️     |
 | `linux/arm/v5`   | ️❌    | ➖     |
 | `linux/arm/v6`   | ✔️     | ❌️    |
@@ -53,7 +53,7 @@ tag has multi-arch manifest supporting following platforms:
 | `linux/arm64/v8` | ✔️     | ✔️     |
 | `linux/mips64le` | ❌️    | ✔️     |
 | `linux/ppc64le`  | ✔️     | ✔️     |
-| `linux/s390x`    | ✔️     | ️➖    |
+| `linux/s390x`    | ✔️     | ✔️     |
 
 ➖ : Supported by the base image but not being built (you could think of it as ❌️)
 

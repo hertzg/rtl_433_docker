@@ -3,7 +3,7 @@ const { matrixEntryConverter, promoteAppendTags } = require('../shared')
 const loadDebianVersions = (() => {
   const versions = {
     latest: 'buster',
-    rest: ['bullseye']
+    rest: ['bullseye'],
   }
 
   return async () => versions
@@ -16,19 +16,19 @@ const variant = (version, debian, override = (s) => s) =>
     tags: [`debian-${debian}-${version}`],
     buildArgs: {
       debianVersion: debian,
-      rtl433GitVersion: version
+      rtl433GitVersion: version,
     },
     platforms: [
-      'linux/386', // fails to install build dependencies
+      // 'linux/386', // fails to install build dependencies
       'linux/amd64',
       // "linux/arm/v5", // fails to install build dependencies
       'linux/arm/v7',
       'linux/arm64/v8',
       'linux/mips64le',
-      'linux/ppc64le'
-      // "linux/s390x", // fails to install runtime dependencies
+      'linux/ppc64le',
+      'linux/s390x', // fails to install runtime dependencies
     ],
-    cacheKeys: [`debian-${debian}-${version}`, `debian-${debian}-`, `debian-`]
+    cacheKeys: [`debian-${debian}-${version}`, `debian-${debian}-`, `debian-`],
   })
 
 module.exports = {
@@ -41,14 +41,14 @@ module.exports = {
       versions: {
         overall: [],
         app: ['latest', version],
-        debian: ['latest', latest]
+        debian: ['latest', latest],
       },
       tags: [
         ...defaults.tags,
         `debian-latest-${version}`,
         `debian-${version}`,
-        'debian'
-      ]
+        'debian',
+      ],
     }))
   },
   rest: async ({ version }) => {
@@ -61,19 +61,19 @@ module.exports = {
         tags: [
           ...defaults.tags,
           `debian-latest-${version}`,
-          `debian-${version}`
-        ]
+          `debian-${version}`,
+        ],
       })),
       ...rest.map((debian) =>
         variant(version, debian, (defaults) => ({
           ...defaults,
-          versions: { app: [version], debian: [debian] }
+          versions: { app: [version], debian: [debian] },
         }))
-      )
+      ),
     ]
   },
   matrixEntry: matrixEntryConverter({
     context: './images/debian/build-context',
-    file: './images/debian/build-context/Dockerfile'
-  })
+    file: './images/debian/build-context/Dockerfile',
+  }),
 }
