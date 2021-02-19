@@ -3,7 +3,7 @@ const { matrixEntryConverter, promoteAppendTags } = require('../shared')
 const loadDebianVersions = (() => {
   const versions = {
     latest: 'buster',
-    rest: ['bullseye'],
+    rest: [],
   }
 
   return async () => versions
