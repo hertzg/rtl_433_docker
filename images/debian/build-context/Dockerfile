@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     git \
     libusb-1.0-0-dev \
+    libsoapysdr-dev \
     librtlsdr-dev \
  && rm -rf /var/lib/apt/lists/*
 
@@ -34,6 +35,8 @@ LABEL maintainer="georgedot@gmail.com" \
 RUN apt-get update && apt-get install -y \
     libusb-1.0-0 \
     librtlsdr0 \
+    libsoapysdr0.6 \
+    soapysdr0.6-module-all \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
