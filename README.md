@@ -1,61 +1,16 @@
-## 🐋 [rtl_433](https://hub.docker.com/r/hertzg/rtl_433) Docker Image
+# 🐋 [rtl_433](https://hub.docker.com/r/hertzg/rtl_433) Docker Image
 
 Repository containing [multiarch docker images](https://hub.docker.com/r/hertzg/rtl_433) definitions of
 [rtl_433](https://github.com/merbanan/rtl_433) utility from [merbanan](https://github.com/merbanan).
 
-Images use `alpine` linux as base to keep the final result as slim as possible.
+Default `latest` images include `rtlsdr` only with `alpine` linux as base to keep the final result as slim as
+possible.  
+There is also `debian` based images which include `rtlsdr` and `sopysdr` with all modules but are slightly bigger `~3mb`
+vs `~50mb`.
 
-The table below describes the tags for each image:
-
-## Alpine based images
-
-| Image Tag                                                          | Revision | Base            | Multi-arch |
-| ------------------------------------------------------------------ | -------- | --------------- | ---------- |
-| `:latest` / `:alpine` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ✔️         |
-| `:master` / `:alpine-master`/ `:alpine-latest-master`              | `master` | `alpine:latest` | ✔️         |
-| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*`             | `<tag>*` | `alpine:latest` | ✔️         |
-| `:alpine-3.13-master`                                              | `master` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.13-latest`                                              | `latest` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.13-<tag>*`                                              | `<tag>*` | `alpine:3.13`   | ✔️         |
-| `:alpine-3.12-master`                                              | `master` | `alpine:3.12`   | ✔️         |
-| `:alpine-3.12-latest`                                              | `latest` | `alpine:3.12`   | ✔️         |
-| `:alpine-3.12-<tag>*`                                              | `<tag>*` | `alpine:3.12`   | ✔️         |
-
-**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
-built from the `master` branch of `rtl_433`.
-
-## Debian based images
-
-| Image Tag                                              | Revision | Base              | Multi-arch |
-| ------------------------------------------------------ | -------- | ----------------- | ---------- |
-| `:debian` / `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ✔️         |
-| `:debian-master`/ `:debian-latest-master`              | `master` | `debian:latest`   | ✔️         |
-| `:debian-<tag>*` / `:debian-latest-<tag>*`             | `<tag>*` | `debian:latest`   | ✔️         |
-| `:debian-bullseye-master`                              | `master` | `debian:bullseye` | ✔️         |
-| `:debian-bullseye-latest`                              | `latest` | `debian:bullseye` | ✔️         |
-| `:debian-bullseye-<tag>*`                              | `<tag>*` | `debian:bullseye` | ✔️         |
-| `:debian-buster-master`                                | `master` | `debian:buster`   | ✔️         |
-| `:debian-buster-latest`                                | `latest` | `debian:buster`   | ✔️         |
-| `:debian-buster-<tag>*`                                | `<tag>*` | `debian:buster`   | ✔️         |
-
-## Multi-arch
-
-Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each
-tag has multi-arch manifest supporting following platforms:
-
-| Architecture     | Alpine | Debian |
-| ---------------- | ------ | ------ |
-| `linux/386`      | ✔️     | ➖     |
-| `linux/amd64`    | ✔️     | ✔️     |
-| `linux/arm/v5`   | ️❌    | ➖     |
-| `linux/arm/v6`   | ✔️     | ❌️    |
-| `linux/arm/v7`   | ✔️     | ✔️     |
-| `linux/arm64/v8` | ✔️     | ✔️     |
-| `linux/mips64le` | ❌️    | ✔️     |
-| `linux/ppc64le`  | ✔️     | ✔️     |
-| `linux/s390x`    | ✔️     | ✔️     |
-
-➖ : Supported by the base image but not being built (you could think of it as ❌️)
+There are multiple flavours (`alpine` & `debian` based) built for multiple platforms (`x86`, `arm`, `mips` and more).
+All images (`alpine-3.12-20.01` vs `debian-buster-20.01`) and their supported platform combinations are described in
+the **Docker Image Tags** section.
 
 ## Usage
 
@@ -236,3 +191,61 @@ services:
 
   influxdb: ...
 ```
+
+## Docker Image Tags
+
+The table below describes the tags for each image:
+
+### Alpine based images
+
+| Image Tag                                                          | Revision | Base            | Extra                                                                                                                                                                                                 |
+| ------------------------------------------------------------------ | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `:latest` / `:alpine` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-latest-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-latest-latest) |
+| `:master` / `:alpine-master`/ `:alpine-latest-master`              | `master` | `alpine:latest` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-latest-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-latest-master) |
+| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*`             | `<tag>*` | `alpine:latest` |                                                                                                                                                                                                       |
+| `:alpine-3.13-master`                                              | `master` | `alpine:3.13`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.13-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.13-master)     |
+| `:alpine-3.13-latest`                                              | `latest` | `alpine:3.13`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.13-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.13-latest)     |
+| `:alpine-3.13-<tag>*`                                              | `<tag>*` | `alpine:3.13`   |                                                                                                                                                                                                       |
+| `:alpine-3.12-master`                                              | `master` | `alpine:3.12`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.12-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.12-master)     |
+| `:alpine-3.12-latest`                                              | `latest` | `alpine:3.12`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.12-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.12-latest)     |
+| `:alpine-3.12-<tag>*`                                              | `<tag>*` | `alpine:3.12`   |                                                                                                                                                                                                       |
+
+**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
+built from the `master` branch of `rtl_433`.
+
+### Debian based images
+
+| Image Tag                                              | Revision | Base              | Extra                                                                                                                                                                                                     |
+| ------------------------------------------------------ | -------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `:debian` / `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-latest-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-latest-latest)     |
+| `:debian-master`/ `:debian-latest-master`              | `master` | `debian:latest`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-latest-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-latest-master)     |
+| `:debian-<tag>*` / `:debian-latest-<tag>*`             | `<tag>*` | `debian:latest`   |                                                                                                                                                                                                           |
+| `:debian-bullseye-master`                              | `master` | `debian:bullseye` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-bullseye-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-bullseye-master) |
+| `:debian-bullseye-latest`                              | `latest` | `debian:bullseye` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-bullseye-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-bullseye-latest) |
+| `:debian-bullseye-<tag>*`                              | `<tag>*` | `debian:bullseye` |                                                                                                                                                                                                           |
+| `:debian-buster-master`                                | `master` | `debian:buster`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-buster-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-buster-master)     |
+| `:debian-buster-latest`                                | `latest` | `debian:buster`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-buster-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-buster-latest)     |
+| `:debian-buster-<tag>*`                                | `<tag>*` | `debian:buster`   |                                                                                                                                                                                                           |
+
+### Multi-arch
+
+Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each
+tag has multi-arch manifest supporting following platforms:
+
+| Architecture     | Alpine | Debian |
+| ---------------- | ------ | ------ |
+| `linux/386`      | ✔️     | ➖     |
+| `linux/amd64`    | ✔️     | ✔️     |
+| `linux/arm/v5`   | ️❌    | ➖     |
+| `linux/arm/v6`   | ✔️     | ❌️    |
+| `linux/arm/v7`   | ✔️     | ✔️     |
+| `linux/arm64/v8` | ✔️     | ✔️     |
+| `linux/mips64le` | ❌️    | ✔️     |
+| `linux/ppc64le`  | ✔️     | ✔️     |
+| `linux/s390x`    | ✔️     | ✔️     |
+
+#### Legend
+
+- ✔️ : Supported and built for
+- ➖ : Not supported (think of it as ❌️)
+- ❌️ : Not supported by the base image
