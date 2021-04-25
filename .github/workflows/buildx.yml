@@ -74,7 +74,7 @@ jobs:
           build-args: ${{ matrix.buildx.buildArgs }}
           platforms: ${{ matrix.buildx.paltforms }}
           pull: true,
-          push: ${{ github.ref == 'refs/heads/master' }},
+          push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }},
           cache-from: ${{ matrix.buildx.cacheFrom }}
           cache-to: ${{ matrix.buildx.cacheTo }}-new
           tags: ${{ matrix.buildx.tags }}
