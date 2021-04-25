@@ -3,7 +3,7 @@ name: Buildx
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: * * * * *
   pull_request:
     branches:
       - master
