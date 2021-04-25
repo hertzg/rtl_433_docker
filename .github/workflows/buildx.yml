@@ -84,5 +84,5 @@ jobs:
         # https://github.com/moby/buildkit/issues/1896
         name: Move cache
         run: |
-          rm -rf ${{ matrix.buildx.cacheFrom }}
-          mv ${{ matrix.buildx.cacheTo }}-new ${{ matrix.buildx.cacheFrom }}
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
