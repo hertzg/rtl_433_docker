@@ -35,6 +35,10 @@ Based on the output my device can be referenced on usb bus `001` as device `003`
 
 Next we need to start the container and share the `/dev/bus/usb/001/003` device to it using the `--device` or `-d` flag.
 
+**Note**: This device enumerator could (most likely will) change if you plug/unplug the device or the hub it's attached
+to, but in most cases if you use the bus path that was generated right after boot and leave the device untouched 
+(don't re-plug) the device, the bus path might say the same. ([#14](https://github.com/hertzg/rtl_433_docker/issues/14))
+
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433
 ```
@@ -42,7 +46,7 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433
 The `--device` or `-d` flag will share the host usb device to the container it will most likely be unusable by the host
 or any other containers.
 
-To use specifc version of `rtl_433` use the docker image tags described from the table above
+To use specifc version of `rtl_433` use the docker image tags described from the table later down
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:master
