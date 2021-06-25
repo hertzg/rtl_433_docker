@@ -2,8 +2,8 @@ const { matrixEntryConverter, promoteAppendTags } = require('../shared')
 
 const loadAlpineVersions = (() => {
   const versions = {
-    latest: '3.13',
-    rest: ['3.12'],
+    latest: '3.14',
+    rest: ['3.13', '3.12'],
   }
 
   return async () => versions
