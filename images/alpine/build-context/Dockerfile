@@ -30,7 +30,7 @@ ARG rtl433GitRevision=master
 LABEL maintainer="georgedot@gmail.com" \
     vcs-ref="${rtl433GitRevision}"
 
-RUN apk add --no-cache libusb librtlsdr
+RUN apk add --no-cache libusb librtlsdr tzdata
 WORKDIR /root
 COPY --from=builder /build/root/ /
 
