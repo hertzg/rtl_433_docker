@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     git \
     libusb-1.0-0-dev \
     libsoapysdr-dev \
+    libssl-dev \
     librtlsdr-dev \
  && rm -rf /var/lib/apt/lists/*
 
@@ -17,7 +18,7 @@ WORKDIR ./rtl_433
 ARG rtl433GitRevision=master
 RUN git checkout ${rtl433GitRevision}
 WORKDIR ./build
-RUN cmake ..
+RUN cmake -DENABLE_OPENSSL=ON ..
 RUN make -j 4
 RUN cat Makefile
 WORKDIR /build/root

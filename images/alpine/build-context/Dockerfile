@@ -4,6 +4,7 @@ FROM alpine:${alpineVersion} as builder
 RUN apk add --no-cache --virtual .buildDeps \
     build-base \
     libusb-dev \
+    libressl-dev \
     librtlsdr-dev \
     cmake \
     git
@@ -15,7 +16,7 @@ WORKDIR ./rtl_433
 ARG rtl433GitRevision=master
 RUN git checkout ${rtl433GitRevision}
 WORKDIR ./build
-RUN cmake ..
+RUN cmake -DENABLE_OPENSSL=ON ..
 RUN make -j 4
 RUN cat Makefile
 WORKDIR /build/root
