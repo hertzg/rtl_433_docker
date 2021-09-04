@@ -1,18 +1,10 @@
 const matrixEntryConverter = ({ context, file }, overrides = {}) => async (
   build
 ) => {
-  const buildxCachePath = `/tmp/.buildx-cache`
-  const [cacheKey, restoreKeys] = build.cacheKeys
   return {
     name: `buildx (${build.id})`,
     runsOn: 'ubuntu-20.04',
     ...overrides,
-    cache: {
-      ...overrides.cache,
-      path: buildxCachePath,
-      cacheKey: cacheKey,
-      restoreKeys: build.cacheKeys,
-    },
     buildx: {
       context,
       file,
@@ -21,8 +13,8 @@ const matrixEntryConverter = ({ context, file }, overrides = {}) => async (
         .map(([key, value]) => `${key}=${value}`)
         .join('\n'),
       paltforms: build.platforms.join(','),
-      cacheFrom: `type=local,src=${buildxCachePath}`,
-      cacheTo: `type=local,dest=${buildxCachePath}`,
+      cacheFrom: `type=gha,scope=${build.flavour}`,
+      cacheTo: `type=gha,scope=${build.flavour}`,
       tags: build.fullTags.join('\n'),
     },
   }
