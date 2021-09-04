@@ -28,7 +28,6 @@ const variant = (version, debian, override = (s) => s) =>
       'linux/ppc64le',
       'linux/s390x', // fails to install runtime dependencies
     ],
-    cacheKeys: [`debian-${debian}-${version}`, `debian-${debian}-`, `debian-`],
   })
 
 module.exports = {
