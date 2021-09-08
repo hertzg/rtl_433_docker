@@ -51,7 +51,7 @@ jobs:
         with:
           repository: 'merbanan/rtl_433'
           ref: ${{ matrix.gitRef }}
-      - run: git archive --format tar.gz --output ${{ matrix.gitRef }}.tar.gz
+      - run: git archive ${{ matrix.gitRef }} --format tar.gz --output ${{ matrix.gitRef }}.tar.gz
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.gitRef }}
