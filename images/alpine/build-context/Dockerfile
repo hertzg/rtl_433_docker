@@ -11,13 +11,11 @@ RUN apk add --no-cache --virtual .buildDeps \
 
 WORKDIR /build
 
-RUN git clone https://github.com/merbanan/rtl_433
+ADD ./rtl_433 ./rtl_433
 WORKDIR ./rtl_433
-ARG rtl433GitRevision=master
-RUN git checkout ${rtl433GitRevision}
 WORKDIR ./build
 RUN cmake -DENABLE_OPENSSL=ON ..
-RUN make -j 4
+RUN make
 RUN cat Makefile
 WORKDIR /build/root
 WORKDIR /build/rtl_433/build

@@ -15,6 +15,7 @@ jobs:
   docker:
     runs-on: ubuntu-20.04
     outputs:
+      gitRefs: ${{ steps.builds.outputs.gitRefs }}
       builds: ${{ steps.builds.outputs.builds }}
       matrix: ${{ steps.builds.outputs.matrix }}
     steps:
@@ -38,11 +39,29 @@ jobs:
             ```json
             ${{ toJSON(fromJSON(steps.builds.outputs.builds).*.id) }}
             ```
+  docker-checkout:
+    runs-on: ubuntu-20.04
+    needs:
+      - docker
+    strategy:
+      matrix:
+        gitRef: ${{ fromJSON(needs.docker.outputs.gitRefs) }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: 'merbanan/rtl_433'
+          ref: ${{ matrix.gitRef }}
+      - run: git archive ${{ matrix.gitRef }} --format tar.gz --output ${{ matrix.gitRef }}.tar.gz
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.gitRef }}
+          path: ${{ matrix.gitRef }}.tar.gz
 
   docker-build:
     name: ${{ matrix.name }}
     needs:
       - docker
+      - docker-checkout
     runs-on: ${{ matrix.runsOn }}
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.matrix) }}
@@ -55,7 +74,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.checkout.ref }}
+          path: ${{ matrix.buildx.context }}
+      - run: |
+          cd ${{ matrix.buildx.context }}
+          mkdir rtl_433
+          tar xf ${{ matrix.checkout.ref }}.tar.gz --directory ./rtl_433
+          rm -f ${{ matrix.checkout.ref }}.tar.gz
       - uses: docker/build-push-action@v2
         with:
           context: ${{ matrix.buildx.context }}
