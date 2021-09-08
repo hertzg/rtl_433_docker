@@ -45,7 +45,7 @@ jobs:
       - docker
     strategy:
       matrix:
-        gitRef: ${{ needs.docker.outputs.gitRefs }}
+        gitRef: ${{ fromJSON(needs.docker.outputs.gitRefs) }}
     steps:
       - uses: actions/checkout@v2
         with:
