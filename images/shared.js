@@ -13,8 +13,8 @@ const matrixEntryConverter = ({ context, file }, overrides = {}) => async (
         .map(([key, value]) => `${key}=${value}`)
         .join('\n'),
       paltforms: build.platforms.join(','),
-      cacheFrom: `type=gha,scope=${build.flavour}`,
-      cacheTo: `type=gha,scope=${build.flavour}`,
+      cacheFrom: `type=gha,scope=${build.cacheScope}`,
+      cacheTo: `type=gha,scope=${build.cacheScope}`,
       tags: build.fullTags.join('\n'),
     },
   }

@@ -27,6 +27,7 @@ const variant = (version, alpine, override = (s) => s) =>
       'linux/ppc64le',
       'linux/s390x',
     ],
+    cacheScope: `alpine-${alpine}`
   })
 
 module.exports = {
