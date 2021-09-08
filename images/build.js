@@ -82,7 +82,18 @@ const writeOutputs = async (outputs) => {
   return outputs
 }
 
+const outputGitRefs = (versions) => {
+  console.log(
+    makeOutput(
+      'gitRefs',
+      JSON.stringify([versions.latest, ...versions.tags, ...versions.extras])
+    )
+  )
+  return versions
+}
+
 fetchVersions('merbanan/rtl_433', ['master'])
+  .then(outputGitRefs)
   .then(generateBuild)
   .then(tagOverallLatest)
   .then(outputBuilds)

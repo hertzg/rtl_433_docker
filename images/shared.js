@@ -5,6 +5,11 @@ const matrixEntryConverter = ({ context, file }, overrides = {}) => async (
     name: `buildx (${build.id})`,
     runsOn: 'ubuntu-20.04',
     ...overrides,
+    checkout: {
+      repository: 'merbanan/rtl_433',
+      ref: build.buildArgs.rtl433GitVersion,
+      path: 'rtl_433',
+    },
     buildx: {
       context,
       file,
