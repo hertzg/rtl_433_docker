@@ -1,5 +1,10 @@
 const { fetchVersions, makeOutput, getMeta, build, pick } = require('../utils')
 
+const REPOSITORIES = [
+  'hertzg/rtl_433',
+  'ghcr.io/hertzg/rtl_433_docker'
+]
+
 const flavourConfigs = {
   alpine: require('./alpine/config'),
   debian: require('./debian/config'),
@@ -58,7 +63,7 @@ const generateEntries = async (builds) => {
       ...build,
       entry: await getConfig(build).matrixEntry({
         ...build,
-        fullTags: build.tags.map((tag) => `hertzg/rtl_433:${tag}`),
+        fullTags: build.tags.flatMap((tag) => REPOSITORIES.map(repo => `${repo}:${tag}`)),
       }),
     }))
   )
