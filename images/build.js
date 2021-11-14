@@ -1,7 +1,8 @@
 const { fetchVersions, makeOutput, getMeta, build, pick } = require('../utils')
 
 const REPOSITORIES = [
-  'hertzg/rtl_433'
+  'hertzg/rtl_433',
+  'ghcr.io/hertzg/rtl_433_docker'
 ]
 
 const flavourConfigs = {
