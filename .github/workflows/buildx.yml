@@ -71,6 +71,8 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
         with:
+          driver-opts: |
+            image=tonistiigi/buildkit:gha-logs
           config-inline: |
             [registry."docker.io"]
               mirrors = ["mirror.gcr.io"]
