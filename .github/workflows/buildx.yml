@@ -73,6 +73,7 @@ jobs:
         with:
           driver-opts: |
             image=tonistiigi/buildkit:gha-logs
+          buildkitd-flags: --debug
           config-inline: |
             [registry."docker.io"]
               mirrors = ["mirror.gcr.io"]
