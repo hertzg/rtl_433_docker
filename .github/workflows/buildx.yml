@@ -72,7 +72,7 @@ jobs:
       - uses: docker/setup-buildx-action@v1
         with:
           driver-opts: |
-            image=tonistiigi/buildkit:gha-logs
+            image=tonistiigi/buildkit:pr2506
           buildkitd-flags: --debug
           config-inline: |
             [registry."docker.io"]
