@@ -71,9 +71,9 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
         with:
+          # TODO: remove the digest pinning after changes from https://github.com/moby/buildkit/pull/2506 are published (probably after v0.9.3)
           driver-opts: |
-            image=tonistiigi/buildkit:pr2506
-          buildkitd-flags: --debug
+            image=moby/buildkit:master@sha256:b8d8458bbab41b575614801826d3e0f50e93d8730aaf68431713e3bdb4378744
           config-inline: |
             [registry."docker.io"]
               mirrors = ["mirror.gcr.io"]
