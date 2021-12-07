@@ -1,5 +1,11 @@
 const { matrixEntryConverter, promoteAppendTags } = require('../shared')
 
+const semUp = (sem, dots) => sem.split('.').slice(0, dots).join('.')
+
+const semMinor = (sem) => semUp(sem, 2)
+
+const semMajor = (sem) => semUp(sem, 1)
+
 const loadAlpineVersions = (() => {
   const versions = {
     latest: '3.15.0',
@@ -17,7 +23,11 @@ const variant = (version, alpine, override = (s) => s) =>
       alpineVersion: alpine,
       rtl433GitVersion: version,
     },
-    tags: [`alpine-${alpine}-${version}`],
+    tags: [
+      `alpine-${alpine}-${version}`, `alpine-${semMinor(alpine)}-${version}`, `alpine-${semMajor(alpine)}-${version}`,
+      `alpine${alpine}-${version}`, `alpine${semMinor(alpine)}-${version}`, `alpine${semMajor(alpine)}-${version}`,
+      `${version}-alpine${alpine}`, `${version}-alpine${semMinor(alpine)}`, `${version}-alpine${semMajor(alpine)}`,
+    ],
     platforms: [
       'linux/386',
       'linux/amd64',
