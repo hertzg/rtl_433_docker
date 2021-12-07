@@ -13,7 +13,11 @@ const variant = (version, debian, override = (s) => s) =>
   override({
     id: `debian-${debian}-${version}`,
     flavour: 'debian',
-    tags: [`debian-${debian}-${version}`],
+    tags: [
+      `debian-${debian}-${version}`,
+      `debian${debian}-${version}`,
+      `${version}-debian${debian}`
+    ],
     buildArgs: {
       debianVersion: debian,
       rtl433GitVersion: version,
