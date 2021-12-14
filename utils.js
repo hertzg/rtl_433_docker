@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+import fetch from 'node-fetch'
 
 const fetchSourceGitTags = (repo) =>
   fetch(`https://api.github.com/repos/${repo}/tags`)
@@ -55,4 +55,4 @@ const pick = (array, predicate) =>
 
 const makeOutput = (name, value) => `::set-output name=${name}::${value}`
 
-module.exports = { build, pick, getMeta, makeOutput, fetchVersions }
+export { build, pick, getMeta, makeOutput, fetchVersions }

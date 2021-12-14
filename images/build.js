@@ -1,13 +1,10 @@
-const { fetchVersions, makeOutput, getMeta, build, pick } = require('../utils')
+import { build, fetchVersions, getMeta, makeOutput, pick } from '../utils.js'
 
-const REPOSITORIES = [
-  'hertzg/rtl_433',
-  'ghcr.io/hertzg/rtl_433_docker'
-]
+const REPOSITORIES = ['hertzg/rtl_433', 'ghcr.io/hertzg/rtl_433_docker']
 
 const flavourConfigs = {
-  alpine: require('./alpine/config'),
-  debian: require('./debian/config'),
+  alpine: (await import('./alpine/config.js')).default,
+  debian: (await import('./debian/config.js')).default,
 }
 
 const getConfig = (build) => flavourConfigs[getMeta(build).flavour]
@@ -52,6 +49,30 @@ const tagOverallLatest = async ({ candidates, rest }) => {
   ]
 }
 
+const tagOverallMaster = async (builds) => {
+  // TODO: This script is quite unwiedly, simplifing the whole thing is not a bad idea
+  const [toPromote] = pick(
+    builds,
+    (build) =>
+      build.flavour === 'alpine' &&
+      build.versions.alpine.includes('latest') &&
+      build.versions.app.includes('master')
+  )
+
+  if (toPromote.length !== 1) {
+    throw new Error(
+      `No or multiple candidates selected for master: ${JSON.stringify({
+        selected: toPromote,
+      })}`
+    )
+  }
+
+  // TODO: Prety hacky, ugh
+  toPromote[0].tags.push('master')
+
+  return builds
+}
+
 const outputBuilds = (builds) => {
   console.log(makeOutput('builds', JSON.stringify(builds)))
   return builds
@@ -63,7 +84,9 @@ const generateEntries = async (builds) => {
       ...build,
       entry: await getConfig(build).matrixEntry({
         ...build,
-        fullTags: build.tags.flatMap((tag) => REPOSITORIES.map(repo => `${repo}:${tag}`)),
+        fullTags: build.tags.flatMap((tag) =>
+          REPOSITORIES.map((repo) => `${repo}:${tag}`)
+        ),
       }),
     }))
   )
@@ -97,10 +120,11 @@ const outputGitRefs = (versions) => {
   return versions
 }
 
-fetchVersions('merbanan/rtl_433', ['master'])
+await fetchVersions('merbanan/rtl_433', ['master'])
   .then(outputGitRefs)
   .then(generateBuild)
   .then(tagOverallLatest)
+  .then(tagOverallMaster)
   .then(outputBuilds)
   .then(generateEntries)
   .then(createMatrices)
