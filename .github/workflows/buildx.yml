@@ -25,6 +25,8 @@ jobs:
           node-version: 14
       - uses: actions/checkout@v2
 
+      - run: yarn install
+
       - id: builds
         run: yarn builds
 

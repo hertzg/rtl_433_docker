@@ -1,4 +1,4 @@
-const { matrixEntryConverter, promoteAppendTags } = require('../shared')
+import { matrixEntryConverter, promoteAppendTags } from '../shared.js'
 
 const semUp = (sem, dots) => sem.split('.').slice(0, dots).join('.')
 
@@ -24,9 +24,15 @@ const variant = (version, alpine, override = (s) => s) =>
       rtl433GitVersion: version,
     },
     tags: [
-      `alpine-${alpine}-${version}`, `alpine-${semMinor(alpine)}-${version}`, `alpine-${semMajor(alpine)}-${version}`,
-      `alpine${alpine}-${version}`, `alpine${semMinor(alpine)}-${version}`, `alpine${semMajor(alpine)}-${version}`,
-      `${version}-alpine${alpine}`, `${version}-alpine${semMinor(alpine)}`, `${version}-alpine${semMajor(alpine)}`,
+      `alpine-${alpine}-${version}`,
+      `alpine-${semMinor(alpine)}-${version}`,
+      `alpine-${semMajor(alpine)}-${version}`,
+      `alpine${alpine}-${version}`,
+      `alpine${semMinor(alpine)}-${version}`,
+      `alpine${semMajor(alpine)}-${version}`,
+      `${version}-alpine${alpine}`,
+      `${version}-alpine${semMinor(alpine)}`,
+      `${version}-alpine${semMajor(alpine)}`,
     ],
     platforms: [
       'linux/386',
@@ -37,10 +43,10 @@ const variant = (version, alpine, override = (s) => s) =>
       'linux/ppc64le',
       'linux/s390x',
     ],
-    cacheScope: `alpine-${alpine}-${version}`
+    cacheScope: `alpine-${alpine}-${version}`,
   })
 
-module.exports = {
+export default {
   promote: promoteAppendTags(['alpine-latest-latest', 'alpine-latest']),
   candidate: async ({ version }) => {
     const { latest } = await loadAlpineVersions()

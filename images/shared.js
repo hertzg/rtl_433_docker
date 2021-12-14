@@ -34,7 +34,7 @@ const promoteAppendTags = (appendTags) => async (image) => ({
   tags: [...image.tags, ...appendTags],
 })
 
-module.exports = {
+export {
   matrixEntryConverter,
   promoteAppendTags,
 }

@@ -1,4 +1,4 @@
-const { matrixEntryConverter, promoteAppendTags } = require('../shared')
+import { matrixEntryConverter, promoteAppendTags } from '../shared.js'
 
 const loadDebianVersions = (() => {
   const versions = {
@@ -16,7 +16,7 @@ const variant = (version, debian, override = (s) => s) =>
     tags: [
       `debian-${debian}-${version}`,
       `debian${debian}-${version}`,
-      `${version}-debian${debian}`
+      `${version}-debian${debian}`,
     ],
     buildArgs: {
       debianVersion: debian,
@@ -32,10 +32,10 @@ const variant = (version, debian, override = (s) => s) =>
       'linux/ppc64le',
       'linux/s390x', // fails to install runtime dependencies
     ],
-    cacheScope: `debian-${debian}-${version}`
+    cacheScope: `debian-${debian}-${version}`,
   })
 
-module.exports = {
+export default {
   promote: promoteAppendTags(['debian-latest-latest', 'debian-latest']),
   candidate: async ({ version }) => {
     const { latest } = await loadDebianVersions()
