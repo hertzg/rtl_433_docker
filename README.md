@@ -1,4 +1,4 @@
-# 🐋 [rtl_433](https://hub.docker.com/r/hertzg/rtl_433) Docker Image
+# 🐋 [rtl_433](https://hub.docker.com/r/hertzg/rtl_433) Docker Image [![Buildx](https://github.com/hertzg/rtl_433_docker/actions/workflows/buildx.yml/badge.svg)](https://github.com/hertzg/rtl_433_docker/actions/workflows/buildx.yml)
 
 Repository containing [multiarch docker images](https://hub.docker.com/r/hertzg/rtl_433) definitions of
 [rtl_433](https://github.com/merbanan/rtl_433) utility from [merbanan](https://github.com/merbanan).
