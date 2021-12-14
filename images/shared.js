@@ -19,7 +19,7 @@ const matrixEntryConverter = ({ context, file }, overrides = {}) => async (
         .join('\n'),
       paltforms: build.platforms.join(','),
       cacheFrom: `type=gha,scope=${build.cacheScope}`,
-      cacheTo: `type=gha,mode=max,scope=${build.cacheScope}`,
+      cacheTo: `type=gha,scope=${build.cacheScope}`,
       tags: build.fullTags.join('\n'),
     },
   }
