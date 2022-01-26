@@ -34,9 +34,9 @@ LABEL maintainer="georgedot@gmail.com" \
 RUN apt-get update && apt-get install -y \
     libusb-1.0-0 \
     librtlsdr0 \
-    libsoapysdr0.6 \
+    '^libsoapysdr0\.[6-7]$' \
     libssl1.1 \
-    soapysdr0.6-module-all \
+    '^soapysdr0\.[6-7]-module-all$' \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
