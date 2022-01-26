@@ -2,9 +2,10 @@ version: '3'
 
 services:
   master:
-    image: hertzg/rtl_433:deban-master
+    image: hertzg/rtl_433:debian-master
     build:
       context: ../..
+      dockerfile: images/debian/build-context/Dockerfile
       args:
         - debianVersion=latest
         - rtl433GitRevision=master
