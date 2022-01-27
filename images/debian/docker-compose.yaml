@@ -2,7 +2,7 @@ version: '3'
 
 services:
   master:
-    image: hertzg/rtl_433:deban-master
+    image: hertzg/rtl_433:debian-master
     build:
       context: ../..
       args:

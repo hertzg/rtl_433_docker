@@ -2,8 +2,8 @@ import { matrixEntryConverter, promoteAppendTags } from '../shared.js'
 
 const loadDebianVersions = (() => {
   const versions = {
-    latest: 'buster',
-    rest: [],
+    latest: 'bullseye',
+    rest: ['buster'],
   }
 
   return async () => versions
