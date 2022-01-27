@@ -5,7 +5,6 @@ services:
     image: hertzg/rtl_433:debian-master
     build:
       context: ../..
-      dockerfile: images/debian/build-context/Dockerfile
       args:
         - debianVersion=latest
         - rtl433GitRevision=master
