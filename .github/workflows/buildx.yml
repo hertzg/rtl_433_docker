@@ -76,7 +76,7 @@ jobs:
           config-inline: |
             [registry."docker.io"]
               mirrors = ["mirror.gcr.io"]
-      - if: ${{ github.actor == github.repository_owner }}
+      - if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
