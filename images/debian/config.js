@@ -28,9 +28,9 @@ const variant = (version, debian, override = (s) => s) =>
       // "linux/arm/v5", // fails to install build dependencies
       'linux/arm/v7',
       'linux/arm64/v8',
-      'linux/mips64le',
-      'linux/ppc64le',
-      'linux/s390x', // fails to install runtime dependencies
+      // 'linux/mips64le',
+      // 'linux/ppc64le',
+      // 'linux/s390x', // fails to install runtime dependencies
     ],
     cacheScope: `debian-${debian}-${version}`,
   })
