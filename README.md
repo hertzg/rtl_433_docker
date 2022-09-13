@@ -8,7 +8,7 @@ possible.
 There is also `debian` based images which include `rtlsdr` and `sopysdr` with all modules but are slightly bigger `~3mb`
 vs `~50mb`.
 
-There are multiple flavours (`alpine` & `debian` based) built for multiple platforms (`x86`, `arm`, `mips` and more).
+There are multiple flavours (`alpine` & `debian` based) built for multiple platforms (mainly `x86`, `arm` and more).
 All images (`alpine-3.12-20.01` vs `debian-buster-20.01`) and their supported platform combinations are described in
 the **Docker Image Tags** section.
 
