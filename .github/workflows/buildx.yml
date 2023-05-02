@@ -96,7 +96,7 @@ jobs:
           mkdir rtl_433
           tar xf ${{ matrix.checkout.ref }}.tar.gz --directory ./rtl_433
           rm -f ${{ matrix.checkout.ref }}.tar.gz
-      - uses: docker/build-push-action@v2
+      - uses: docker/build-push-action@v4
         with:
           context: ${{ matrix.buildx.context }}
           file: ${{ matrix.buildx.file }}
