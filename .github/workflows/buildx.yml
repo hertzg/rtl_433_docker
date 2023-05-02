@@ -87,7 +87,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: ${{ matrix.checkout.ref }}
           path: ${{ matrix.buildx.context }}
