@@ -8,8 +8,8 @@ const semMajor = (sem) => semUp(sem, 1)
 
 const loadAlpineVersions = (() => {
   const versions = {
-    latest: '3.15.0',
-    rest: ['3.14.3', '3.13.7', '3.12.9'],
+    latest: '3.16.5',
+    rest: ['3.15.0', '3.14.3', '3.13.7'],
   }
 
   return async () => versions
