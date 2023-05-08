@@ -53,6 +53,11 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:master
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:latest
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:20.02
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:18.05
+pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:alpine-20.02
+pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:alpine-3-20.02
+pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:alpine-3.14-20.02
+pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:alpine-3.14.3-20.02
+pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:<flavour>-<flavour-version>-<rtl_433-version>
 ```
 
 To pass arguments to `rtl_433` executable use can use the docker commands by appending them at the end of the run
