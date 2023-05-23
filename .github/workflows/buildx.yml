@@ -25,7 +25,7 @@ jobs:
           deno-version: v1.x
       - uses: actions/checkout@v3
       - id: builds
-        run: deno run --allow-net --allow-read src/main.ts
+        run: deno run --allow-net --allow-read --allow-write --allow-env src/main.ts
 
   checkout:
     runs-on: ubuntu-22.04
