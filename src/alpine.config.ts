@@ -2,7 +2,7 @@ import { BuildTask } from "./main.ts";
 import { semMajor, semMinor, sortRtl433TagsDesc } from "./utils.ts";
 import { sort } from "./deps/std.semver.ts";
 
-const ALPINE_VERSIONS = ["3.16.5", "3.15.0", "3.14.3", "3.13.7"];
+const ALPINE_VERSIONS = ["3.18.0", "3.17.3"];
 const [ALPINE_LATEST_VERSION] = sort(ALPINE_VERSIONS).reverse();
 
 export const createAlpineBuildTasks = (
