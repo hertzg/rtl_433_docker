@@ -1,7 +1,25 @@
 import { BuildTask } from "./main.ts";
 import { sortRtl433TagsDesc } from "./utils.ts";
 
-const DEBIAN_VERSIONS = ["bullseye", "buster"];
+const fetchLastDebianCycleCodenames = async () => {
+  const res = await fetch('https://endoflife.date/api/debian.json');
+  
+  const cycles = await res.json() as (Array<{
+    "cycle": string,
+    "codename": string,
+    "releaseDate": string,
+    "eol": string,
+    "extendedSupport": string,
+    "link": string,
+    "latest": string,
+    "latestReleaseDate": string,
+    "lts": boolean
+  }>);
+
+  return cycles.slice(0, 2).map(cycles => cycles.codename.toLocaleLowerCase());
+}
+
+const DEBIAN_VERSIONS = await fetchLastDebianCycleCodenames();
 const DEBIAN_LATEST_VERSION = DEBIAN_VERSIONS[0];
 
 export const createDebianBuildTasks = (
