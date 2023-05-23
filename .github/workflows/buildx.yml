@@ -12,42 +12,28 @@ on:
       - master
 
 jobs:
-  docker:
-    runs-on: ubuntu-20.04
+  setup:
+    runs-on: ubuntu-22.04
     outputs:
       gitRefs: ${{ steps.builds.outputs.gitRefs }}
-      builds: ${{ steps.builds.outputs.builds }}
-      matrix: ${{ steps.builds.outputs.matrix }}
+      latestTasks: ${{ steps.builds.outputs.latestTasks }}
+      alpineTasks: ${{ steps.builds.outputs.alpineTasks }}
+      debianTasks: ${{ steps.builds.outputs.latest }}
     steps:
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      - uses: denoland/setup-deno@v1
         with:
-          node-version: 14
+          deno-version: v1.x
       - uses: actions/checkout@v3
-
-      - run: yarn install
-
       - id: builds
-        run: yarn builds
+        run: deno run --allow-net --allow-read src/main.ts
 
-      - if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@v2
-        continue-on-error: true
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: builds
-          message: |
-            # Builds
-            ```json
-            ${{ toJSON(fromJSON(steps.builds.outputs.builds).*.id) }}
-            ```
-  docker-checkout:
-    runs-on: ubuntu-20.04
+  checkout:
+    runs-on: ubuntu-22.04
     needs:
-      - docker
+      - setup
     strategy:
       matrix:
-        gitRef: ${{ fromJSON(needs.docker.outputs.gitRefs) }}
+        gitRef: ${{ fromJSON(needs.setup.outputs.gitRefs) }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -59,14 +45,15 @@ jobs:
           name: ${{ matrix.gitRef }}
           path: ${{ matrix.gitRef }}.tar.gz
 
-  docker-build:
+  latest:
     name: ${{ matrix.name }}
     needs:
-      - docker
-      - docker-checkout
-    runs-on: ${{ matrix.runsOn }}
+    - setup
+    - checkout
+    runs-on: ubuntu-22.04
     strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.matrix) }}
+      matrix: 
+        include: ${{ fromJSON(needs.setup.outputs.latestTasks) }}
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -89,21 +76,121 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ matrix.checkout.ref }}
-          path: ${{ matrix.buildx.context }}
+          name: ${{ matrix.gitRef }}
+          path: ${{ matrix.context }}
       - run: |
-          cd ${{ matrix.buildx.context }}
+          cd ${{ matrix.context }}
           mkdir rtl_433
-          tar xf ${{ matrix.checkout.ref }}.tar.gz --directory ./rtl_433
-          rm -f ${{ matrix.checkout.ref }}.tar.gz
+          tar xf ${{ matrix.gitRef }}.tar.gz --directory ./rtl_433
+          rm -f ${{ matrix.gitRef }}.tar.gz
       - uses: docker/build-push-action@v4
         with:
-          context: ${{ matrix.buildx.context }}
-          file: ${{ matrix.buildx.file }}
-          build-args: ${{ matrix.buildx.buildArgs }}
-          platforms: ${{ matrix.buildx.paltforms }}
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          build-args: ${{ matrix.buildArgs }}
+          platforms: ${{ matrix.paltforms }}
           pull: true
           push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
-          cache-from: ${{ matrix.buildx.cacheFrom }}
-          cache-to: ${{ matrix.buildx.cacheTo }}
-          tags: ${{ matrix.buildx.tags }}
+          cache-from: ${{ matrix.cacheFrom }}
+          cache-to: ${{ matrix.cacheTo }}
+          tags: ${{ matrix.tags }}
+
+  alpine:
+    name: ${{ matrix.name }}
+    needs:
+    - setup
+    - checkout
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix: 
+        include: ${{ fromJSON(needs.setup.outputs.alpineTasks) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+        with:
+          version: latest
+          config-inline: |
+            [registry."docker.io"]
+              mirrors = ["mirror.gcr.io"]
+      - if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.gitRef }}
+          path: ${{ matrix.context }}
+      - run: |
+          cd ${{ matrix.context }}
+          mkdir rtl_433
+          tar xf ${{ matrix.gitRef }}.tar.gz --directory ./rtl_433
+          rm -f ${{ matrix.gitRef }}.tar.gz
+      - uses: docker/build-push-action@v4
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          build-args: ${{ matrix.buildArgs }}
+          platforms: ${{ matrix.paltforms }}
+          pull: true
+          push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
+          cache-from: ${{ matrix.cacheFrom }}
+          cache-to: ${{ matrix.cacheTo }}
+          tags: ${{ matrix.tags }}
+
+  debian:
+    name: ${{ matrix.name }}
+    needs:
+    - setup
+    - checkout
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix: 
+        include: ${{ fromJSON(needs.setup.outputs.debianTasks) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+        with:
+          version: latest
+          config-inline: |
+            [registry."docker.io"]
+              mirrors = ["mirror.gcr.io"]
+      - if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.gitRef }}
+          path: ${{ matrix.context }}
+      - run: |
+          cd ${{ matrix.context }}
+          mkdir rtl_433
+          tar xf ${{ matrix.gitRef }}.tar.gz --directory ./rtl_433
+          rm -f ${{ matrix.gitRef }}.tar.gz
+      - uses: docker/build-push-action@v4
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          build-args: ${{ matrix.buildArgs }}
+          platforms: ${{ matrix.paltforms }}
+          pull: true
+          push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
+          cache-from: ${{ matrix.cacheFrom }}
+          cache-to: ${{ matrix.cacheTo }}
+          tags: ${{ matrix.tags }}
