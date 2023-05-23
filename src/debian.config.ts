@@ -63,14 +63,9 @@ export const createDebianBuildTasks = (
           debianVersion: debianVersion,
         },
         platforms: [
-          // 'linux/386', // fails to install build dependencies
           "linux/amd64",
-          // "linux/arm/v5", // fails to install build dependencies
           "linux/arm/v7",
           "linux/arm64/v8",
-          // 'linux/mips64le',
-          // 'linux/ppc64le',
-          // 'linux/s390x', // fails to install runtime dependencies
         ],
         cacheFrom: `type=gha,scope=debian-${debianVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=debian-${debianVersion}-${gitRef}`,
