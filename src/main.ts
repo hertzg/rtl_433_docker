@@ -61,7 +61,7 @@ if (!latest) {
   throw new Error("Unable to pluck latest");
 }
 
-setOutputTask("latest", latest);
+setOutputTasks("latestTasks", [latest]);
 setOutputTasks("alpineTasks", alpineTasks);
 
 const debianTasks = createDebianBuildTasks(tags);

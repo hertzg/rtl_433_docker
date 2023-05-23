@@ -18,7 +18,7 @@ jobs:
       gitRefs: ${{ steps.builds.outputs.gitRefs }}
       latestTasks: ${{ steps.builds.outputs.latestTasks }}
       alpineTasks: ${{ steps.builds.outputs.alpineTasks }}
-      debianTasks: ${{ steps.builds.outputs.latest }}
+      debianTasks: ${{ steps.builds.outputs.debianTasks }}
     steps:
       - uses: denoland/setup-deno@v1
         with:
@@ -45,7 +45,7 @@ jobs:
           name: ${{ matrix.gitRef }}
           path: ${{ matrix.gitRef }}.tar.gz
 
-  latest:
+  latests:
     name: ${{ matrix.name }}
     needs:
     - setup
