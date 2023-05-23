@@ -1,24 +1,28 @@
 # 🐋 [rtl_433](https://hub.docker.com/r/hertzg/rtl_433) Docker Image [![Buildx](https://github.com/hertzg/rtl_433_docker/actions/workflows/buildx.yml/badge.svg)](https://github.com/hertzg/rtl_433_docker/actions/workflows/buildx.yml)
 
-Repository containing [multiarch docker images](https://hub.docker.com/r/hertzg/rtl_433) definitions of
-[rtl_433](https://github.com/merbanan/rtl_433) utility from [merbanan](https://github.com/merbanan).
+Repository containing
+[multiarch docker images](https://hub.docker.com/r/hertzg/rtl_433) definitions
+of [rtl_433](https://github.com/merbanan/rtl_433) utility from
+[merbanan](https://github.com/merbanan).
 
-Default `latest` images include `rtlsdr` only with `alpine` linux as base to keep the final result as slim as
-possible.  
-There is also `debian` based images which include `rtlsdr` and `sopysdr` with all modules but are slightly bigger `~3mb`
-vs `~50mb`.
+Default `latest` images include `rtlsdr` only with `alpine` linux as base to
+keep the final result as slim as possible.\
+There is also `debian` based images which include `rtlsdr` and `sopysdr` with
+all modules but are slightly bigger `~3mb` vs `~50mb`.
 
-There are multiple flavours (`alpine` & `debian` based) built for multiple platforms (mainly `x86`, `arm` and more).
-All images (`alpine-3.12-20.01` vs `debian-buster-20.01`) and their supported platform combinations are described in
-the **Docker Image Tags** section.
+There are multiple flavours (`alpine` & `debian` based) built for multiple
+platforms (mainly `x86`, `arm` and more). All images (`alpine-3.12-20.01` vs
+`debian-buster-20.01`) and their supported platform combinations are described
+in the **Docker Image Tags** section.
 
 ## Usage
 
-The tool is very versatile, you can run in multiple ways. The docker image uses the `rtl_433` executable as `ENTRYPOINT`
-so all the command line arguments get passed to it when used together with `docker run`.
+The tool is very versatile, you can run in multiple ways. The docker image uses
+the `rtl_433` executable as `ENTRYPOINT` so all the command line arguments get
+passed to it when used together with `docker run`.
 
-First you need to find the bus and device ids for your SDR device. Here I use `lsusb` to find the bus and device ids for
-my `RTL2838` receiver.
+First you need to find the bus and device ids for your SDR device. Here I use
+`lsusb` to find the bus and device ids for my `RTL2838` receiver.
 
 Same approach should work for other USB devices as well.
 
@@ -31,22 +35,27 @@ Bus xxx Device xxx: ID xxxx:xxxx ...
 Bus xxx Device xxx: ID xxxx:xxxx ...
 ```
 
-Based on the output my device can be referenced on usb bus `001` as device `003`.
+Based on the output my device can be referenced on usb bus `001` as device
+`003`.
 
-Next we need to start the container and share the `/dev/bus/usb/001/003` device to it using the `--device` or `-d` flag.
+Next we need to start the container and share the `/dev/bus/usb/001/003` device
+to it using the `--device` or `-d` flag.
 
-**Note**: This device enumerator could (most likely will) change if you plug/unplug the device or the hub it's attached
-to, but in most cases if you use the bus path that was generated right after boot and leave the device untouched 
-(don't re-plug) the device, the bus path might say the same. ([#14](https://github.com/hertzg/rtl_433_docker/issues/14))
+**Note**: This device enumerator could (most likely will) change if you
+plug/unplug the device or the hub it's attached to, but in most cases if you use
+the bus path that was generated right after boot and leave the device untouched
+(don't re-plug) the device, the bus path might say the same.
+([#14](https://github.com/hertzg/rtl_433_docker/issues/14))
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433
 ```
 
-The `--device` or `-d` flag will share the host usb device to the container it will most likely be unusable by the host
-or any other containers.
+The `--device` or `-d` flag will share the host usb device to the container it
+will most likely be unusable by the host or any other containers.
 
-To use specifc version of `rtl_433` use the docker image tags described from the table later down
+To use specifc version of `rtl_433` use the docker image tags described from the
+table later down
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:master
@@ -60,8 +69,8 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:alpine-
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433:<flavour>-<flavour-version>-<rtl_433-version>
 ```
 
-To pass arguments to `rtl_433` executable use can use the docker commands by appending them at the end of the run
-command
+To pass arguments to `rtl_433` executable use can use the docker commands by
+appending them at the end of the run command
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -h
@@ -155,12 +164,13 @@ Trying conf file at "/etc/rtl_433/rtl_433.conf"...
         Specify host/port for syslog with e.g. -F syslog:127.0.0.1:1514
 ```
 
-You can also use `-d`, `-g`, `-R`, `-X`, `-F`, `-M`, `-r`, `-w`, or `-W` without argument for more help on their usages
-as described in the help.
+You can also use `-d`, `-g`, `-R`, `-X`, `-F`, `-M`, `-r`, `-w`, or `-W` without
+argument for more help on their usages as described in the help.
 
 ## Example Usages
 
-Use rtl_433 to capture 433Mhz traffic, decode it and send to your local MQTT broker.
+Use rtl_433 to capture 433Mhz traffic, decode it and send to your local MQTT
+broker.
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -Fmqtt://127.0.0.1:1883
@@ -172,13 +182,15 @@ same as above and also send the data to influxdb
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -Mtime:unix:usec:utc -Fmqtt://127.0.0.1:1883 -Finflux://127.0.0.1:8086/write?db=rtl433
 ```
 
-same as above but with extra information like signal, protocol information and system stats
+same as above but with extra information like signal, protocol information and
+system stats
 
 ```shell script
 pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433 -Mtime:unix:usec:utc -Mbits -Mlevel -Mprotocol -Mstats:2:300 -Fmqtt://127.0.0.1:1883 -Finflux://127.0.0.1:8086/write?db=rtl433
 ```
 
-same as above but for `docker-compose.yaml` using MQTT and InfluxDB from the same compose stack
+same as above but for `docker-compose.yaml` using MQTT and InfluxDB from the
+same compose stack
 
 ```yaml
 version: '3'
@@ -219,8 +231,9 @@ The table below describes the tags for each image:
 | `:alpine-3.12-latest`                                              | `latest` | `alpine:3.12`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.12-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.12-latest)     |
 | `:alpine-3.12-<tag>*`                                              | `<tag>*` | `alpine:3.12`   |                                                                                                                                                                                                       |
 
-**Note**: Shorthand tags like `master` and `latest` always target `latest` alpine image. Images tagged `master` are
-built from the `master` branch of `rtl_433`.
+**Note**: Shorthand tags like `master` and `latest` always target `latest`
+alpine image. Images tagged `master` are built from the `master` branch of
+`rtl_433`.
 
 ### Debian based images
 
@@ -238,20 +251,21 @@ built from the `master` branch of `rtl_433`.
 
 ### Multi-arch
 
-Images are ready to run on different architectures. Due to popularity of small "credit card" sized devices and such each
-tag has multi-arch manifest supporting following platforms:
+Images are ready to run on different architectures. Due to popularity of small
+"credit card" sized devices and such each tag has multi-arch manifest supporting
+following platforms:
 
 | Architecture     | Alpine | Debian |
 | ---------------- | ------ | ------ |
-| `linux/386`      | ✔️     | ➖     |
-| `linux/amd64`    | ✔️     | ✔️     |
-| `linux/arm/v5`   | ️❌    | ➖     |
-| `linux/arm/v6`   | ✔️     | ❌️    |
-| `linux/arm/v7`   | ✔️     | ✔️     |
-| `linux/arm64/v8` | ✔️     | ✔️     |
-| `linux/mips64le` | ❌️    | ✔️     |
-| `linux/ppc64le`  | ✔️     | ✔️     |
-| `linux/s390x`    | ✔️     | ✔️     |
+| `linux/386`      | ✔️      | ➖     |
+| `linux/amd64`    | ✔️      | ✔️      |
+| `linux/arm/v5`   | ️❌     | ➖     |
+| `linux/arm/v6`   | ✔️      | ❌️     |
+| `linux/arm/v7`   | ✔️      | ✔️      |
+| `linux/arm64/v8` | ✔️      | ✔️      |
+| `linux/mips64le` | ❌️     | ✔️      |
+| `linux/ppc64le`  | ✔️      | ✔️      |
+| `linux/s390x`    | ✔️      | ✔️      |
 
 #### Legend
 

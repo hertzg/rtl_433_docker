@@ -3,23 +3,22 @@ import { semMajor, semMinor, sortRtl433TagsDesc } from "./utils.ts";
 import { sort } from "./deps/std.semver.ts";
 
 const fetchLastAlpineCycleVersions = async () => {
-  const res = await fetch('https://endoflife.date/api/alpine.json');
-  
+  const res = await fetch("https://endoflife.date/api/alpine.json");
+
   const cycles = await res.json() as (Array<{
-    "cycle": string,
-    "releaseDate": string,
-    "eol": string,
-    "latest": string,
-    "latestReleaseDate": string,
-    "lts": boolean
+    "cycle": string;
+    "releaseDate": string;
+    "eol": string;
+    "latest": string;
+    "latestReleaseDate": string;
+    "lts": boolean;
   }>);
 
-  return cycles.slice(0, 2).map(cycles => cycles.latest);
-}
+  return cycles.slice(0, 2).map((cycles) => cycles.latest);
+};
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
 const ALPINE_LATEST_VERSION = ALPINE_VERSIONS[0];
-
 
 export const createAlpineBuildTasks = (
   gitRefs: string[],

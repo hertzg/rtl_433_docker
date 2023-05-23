@@ -60,6 +60,7 @@ const [latest, alpineTasks] = pluckLatest(createAlpineBuildTasks(tags));
 if (!latest) {
   throw new Error("Unable to pluck latest");
 }
+latest.tags.push("latest");
 
 setOutputTasks("latestTasks", [latest]);
 setOutputTasks("alpineTasks", alpineTasks);
