@@ -1,6 +1,5 @@
 import { BuildTask } from "./main.ts";
 import { semMajor, semMinor, sortRtl433TagsDesc } from "./utils.ts";
-import { sort } from "./deps/std.semver.ts";
 
 const fetchLastAlpineCycleVersions = async () => {
   const res = await fetch("https://endoflife.date/api/alpine.json");
