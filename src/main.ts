@@ -19,7 +19,11 @@ export interface BuildTask {
   cacheTo: string;
 }
 
-const REPOS = ["hertzg/rtl433", "hertzg/rtl_433", "ghcr.io/hertzg/rtl_433_docker"];
+const REPOS = [
+  "hertzg/rtl433",
+  "hertzg/rtl_433",
+  "ghcr.io/hertzg/rtl_433_docker",
+];
 
 const setOutputTasks = (name: string, tasks: BuildTask[]) => {
   const outputs = prepareOutput(tasks, REPOS);
