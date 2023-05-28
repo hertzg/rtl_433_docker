@@ -27,7 +27,7 @@ For convenience the **latest version of** `alpine` base is considered as
 "default" so you can just use
 
 :information_source: Keep in mind that only the ****latest release**** of
-rtl_433 (`22.12` as of 2023-05-28) is considered `:latest` as
+rtl_433 (`22.11` as of 2023-05-28) is considered `:latest` as
 `<rtl_433_git_ref>`. :information_source:
 
 ```
@@ -35,12 +35,12 @@ docker run hertzg/rtl_433:latest -V
 
 # is the exact same image as 
 
-docker run hertzg/rtl_433:22.12 -V                       # as of 28 May 2023 the 22.12 is the latest released version
-docker run hertzg/rtl_433:22.12-alpine -V                # shorthand for 22.12-alpine-latest
-docker run hertzg/rtl_433:22.12-alpine-3 -V              # targets Alpine major version 3
-docker run hertzg/rtl_433:22.12-alpine-3.18 -V           # targets Alpine minor version 3.18
-docker run hertzg/rtl_433:22.12-alpine-3.18.0 -V         # targets Alpine patch version 3.18.0
-docker run hertzg/rtl_433:22.12-alpine-latest -V         # targets latest Alpine version
+docker run hertzg/rtl_433:22.11 -V                       # as of 28 May 2023 the 22.11 is the latest released version
+docker run hertzg/rtl_433:22.11-alpine -V                # shorthand for 22.11-alpine-latest
+docker run hertzg/rtl_433:22.11-alpine-3 -V              # targets Alpine major version 3
+docker run hertzg/rtl_433:22.11-alpine-3.18 -V           # targets Alpine minor version 3.18
+docker run hertzg/rtl_433:22.11-alpine-3.18.0 -V         # targets Alpine patch version 3.18.0
+docker run hertzg/rtl_433:22.11-alpine-latest -V         # targets latest Alpine version
 ```
 
 :bulb: For Debian based builds you just use `debian` as `<base>` instead of
