@@ -13,7 +13,7 @@ const fetchLastAlpineCycleVersions = async () => {
     "lts": boolean;
   }>);
 
-  return cycles.slice(0, 1).map((cycles) => cycles.latest);
+  return cycles.slice(0, 2).map((cycles) => cycles.latest);
 };
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
