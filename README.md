@@ -11,15 +11,57 @@ There is also `debian` based images which include `rtlsdr` and `sopysdr` with
 all modules but are slightly bigger `~3mb` vs `~50mb`.
 
 There are multiple flavours (`alpine` & `debian` based) built for multiple
-platforms (mainly `x86`, `arm` and more). All images (`alpine-3.12-20.01` vs
-`debian-buster-20.01`) and their supported platform combinations are described
-in the **Docker Image Tags** section.
+platforms (mainly `x86`, `arm` and more).
 
 ## Usage
 
-The tool is very versatile, you can run in multiple ways. The docker image uses
-the `rtl_433` executable as `ENTRYPOINT` so all the command line arguments get
-passed to it when used together with `docker run`.
+:warning: Tags have been refactored to follow "a more logical" structure.
+:warning:
+
+```
+hertzg/rtl_433:<rtl_433_git_ref>-<base>-<base_version>
+ghcr.io/hertzg/rtl_433_docker:<rtl_433_git_ref>-<base>-<base_version>
+```
+
+For convenience the **latest version of** `alpine` base is considered as
+"default" so you can just use
+
+:information_source: Keep in mind that only the ****latest release**** of
+rtl_433 (`22.12` as of 2023-05-28) is considered `:latest` as
+`<rtl_433_git_ref>`. :information_source:
+
+```
+docker run hertzg/rtl_433:latest -V
+
+# is the exact same image as 
+
+docker run hertzg/rtl_433:22.12 -V                       # as of 28 May 2023 the 22.12 is the latest released version
+docker run hertzg/rtl_433:22.12-alpine -V                # shorthand for 22.12-alpine-latest
+docker run hertzg/rtl_433:22.12-alpine-3 -V              # targets Alpine major version 3
+docker run hertzg/rtl_433:22.12-alpine-3.18 -V           # targets Alpine minor version 3.18
+docker run hertzg/rtl_433:22.12-alpine-3.18.0 -V         # targets Alpine patch version 3.18.0
+docker run hertzg/rtl_433:22.12-alpine-latest -V         # targets latest Alpine version
+```
+
+:bulb: For Debian based builds you just use `debian` as `<base>` instead of
+`alpine` and provide a correct debian version.
+
+If you want the latest `master` branch build use `:master` or `:nightly` for
+nightly builds. The following are
+
+```
+# for alpine based images
+docker run hertzg/rtl_433:master -V
+docker run hertzg/rtl_433:master-alpine -V
+docker run hertzg/rtl_433:master-alpine-3 -V
+docker run hertzg/rtl_433:master-alpine-3.18 -V
+docker run hertzg/rtl_433:master-alpine-3.18.0 -V
+docker run hertzg/rtl_433:master-alpine-latest -V
+```
+
+The tool itself is very versatile, you can run in multiple ways. The docker
+image uses the `rtl_433` executable as `ENTRYPOINT` so all the command line
+arguments get passed to it when used together with `docker run`.
 
 First you need to find the bus and device ids for your SDR device. Here I use
 `lsusb` to find the bus and device ids for my `RTL2838` receiver.
@@ -212,42 +254,6 @@ services:
 
   influxdb: ...
 ```
-
-## Docker Image Tags
-
-The table below describes the tags for each image:
-
-### Alpine based images
-
-| Image Tag                                                          | Revision | Base            | Extra                                                                                                                                                                                                 |
-| ------------------------------------------------------------------ | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `:latest` / `:alpine` / `:alpine-latest` / `:alpine-latest-latest` | `latest` | `alpine:latest` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-latest-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-latest-latest) |
-| `:master` / `:alpine-master`/ `:alpine-latest-master`              | `master` | `alpine:latest` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-latest-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-latest-master) |
-| `:<tag>*` / `:alpine-<tag>*` / `:alpine-latest-<tag>*`             | `<tag>*` | `alpine:latest` |                                                                                                                                                                                                       |
-| `:alpine-3.13-master`                                              | `master` | `alpine:3.13`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.13-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.13-master)     |
-| `:alpine-3.13-latest`                                              | `latest` | `alpine:3.13`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.13-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.13-latest)     |
-| `:alpine-3.13-<tag>*`                                              | `<tag>*` | `alpine:3.13`   |                                                                                                                                                                                                       |
-| `:alpine-3.12-master`                                              | `master` | `alpine:3.12`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.12-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.12-master)     |
-| `:alpine-3.12-latest`                                              | `latest` | `alpine:3.12`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/alpine-3.12-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/alpine-3.12-latest)     |
-| `:alpine-3.12-<tag>*`                                              | `<tag>*` | `alpine:3.12`   |                                                                                                                                                                                                       |
-
-**Note**: Shorthand tags like `master` and `latest` always target `latest`
-alpine image. Images tagged `master` are built from the `master` branch of
-`rtl_433`.
-
-### Debian based images
-
-| Image Tag                                              | Revision | Base              | Extra                                                                                                                                                                                                     |
-| ------------------------------------------------------ | -------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `:debian` / `:debian-latest` / `:debian-latest-latest` | `latest` | `debian:latest`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-latest-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-latest-latest)     |
-| `:debian-master`/ `:debian-latest-master`              | `master` | `debian:latest`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-latest-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-latest-master)     |
-| `:debian-<tag>*` / `:debian-latest-<tag>*`             | `<tag>*` | `debian:latest`   |                                                                                                                                                                                                           |
-| `:debian-bullseye-master`                              | `master` | `debian:bullseye` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-bullseye-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-bullseye-master) |
-| `:debian-bullseye-latest`                              | `latest` | `debian:bullseye` | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-bullseye-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-bullseye-latest) |
-| `:debian-bullseye-<tag>*`                              | `<tag>*` | `debian:bullseye` |                                                                                                                                                                                                           |
-| `:debian-buster-master`                                | `master` | `debian:buster`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-buster-master) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-buster-master)     |
-| `:debian-buster-latest`                                | `latest` | `debian:buster`   | ![Docker Image version](https://img.shields.io/docker/v/hertzg/rtl_433/debian-buster-latest) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/hertzg/rtl_433/debian-buster-latest)     |
-| `:debian-buster-<tag>*`                                | `<tag>*` | `debian:buster`   |                                                                                                                                                                                                           |
 
 ### Multi-arch
 

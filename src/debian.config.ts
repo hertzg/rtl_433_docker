@@ -24,6 +24,20 @@ const fetchLastDebianCycleCodenames = async () => {
 const DEBIAN_VERSIONS = await fetchLastDebianCycleCodenames();
 const DEBIAN_LATEST_VERSION = DEBIAN_VERSIONS[0];
 
+const generateTags = (baseVersion: string, gitRef: string) => {
+  const tags = [
+    `${gitRef}-debian-${baseVersion}`,
+  ];
+
+  if (baseVersion === "latest") {
+    tags.push(...[
+      `${gitRef}-debian`,
+    ]);
+  }
+
+  return tags;
+};
+
 export const createDebianBuildTasks = (
   gitRefs: string[],
 ): BuildTask[] => {
@@ -31,25 +45,31 @@ export const createDebianBuildTasks = (
 
   const variants = gitRefs.flatMap((gitRef) =>
     DEBIAN_VERSIONS.map((debianVersion) => {
+      const isLatestGitRef = gitRef === latestGitRef;
+      const isLatestBase = debianVersion === DEBIAN_LATEST_VERSION;
       return {
         gitRef,
         debianVersion,
-        isLatest: gitRef === latestGitRef &&
-          debianVersion === DEBIAN_LATEST_VERSION,
+        isLatestGitRef,
+        isLatestBase,
       };
     })
   );
 
   const tasks: BuildTask[] = variants.map(
-    ({ gitRef, debianVersion, isLatest }) => {
-      const tags = [
-        `debian-${debianVersion}-${gitRef}`,
-        `debian${debianVersion}-${gitRef}`,
-        `${gitRef}-debian${debianVersion}`,
-      ];
+    ({ gitRef, debianVersion, isLatestGitRef, isLatestBase }) => {
+      const tags = generateTags(debianVersion, gitRef);
 
-      if (isLatest) {
-        tags.push("debian-latest-latest", "debian-latest");
+      if (isLatestBase) {
+        tags.push(...generateTags("latest", gitRef));
+      }
+
+      if (isLatestGitRef) {
+        tags.push(...generateTags(debianVersion, "latest"));
+      }
+
+      if (isLatestBase && isLatestGitRef) {
+        tags.push(...generateTags("latest", "latest"));
       }
 
       return {
