@@ -22,6 +22,9 @@ export interface BuildTask {
 const REPOS = ["hertzg/rtl_433", "ghcr.io/hertzg/rtl_433_docker"];
 
 const setOutputTasks = (name: string, tasks: BuildTask[]) => {
+  console.log(tasks.map((task) => task.tags));
+  return
+
   const outputs = prepareOutput(tasks, REPOS);
 
   return setOutput(
@@ -30,30 +33,13 @@ const setOutputTasks = (name: string, tasks: BuildTask[]) => {
   );
 };
 
-const pluckLatest = (tasks: BuildTask[]) => {
-  const overallLatest = tasks.find((task) =>
-    task.tags.includes("alpine-latest-latest")
-  );
-
-  return [
-    overallLatest,
-    tasks.filter((task) => task !== overallLatest),
-  ] as const;
-};
-
 const tags = (await getGithubRepoTags("merbanan/rtl_433")).map((tag) =>
   tag.name
 ).filter((tag) => /^[0-9\.]*$/i.test(tag));
 tags.push("master", "nightly");
 setOutput("gitRefs", tags);
 
-const [latest, alpineTasks] = pluckLatest(createAlpineBuildTasks(tags));
-if (!latest) {
-  throw new Error("Unable to pluck latest");
-}
-latest.tags.push("latest");
-
-setOutputTasks("latestTasks", [latest]);
+const alpineTasks = createAlpineBuildTasks(tags);
 setOutputTasks("alpineTasks", alpineTasks);
 
 const debianTasks = createDebianBuildTasks(tags);

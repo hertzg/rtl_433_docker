@@ -13,11 +13,32 @@ const fetchLastAlpineCycleVersions = async () => {
     "lts": boolean;
   }>);
 
-  return cycles.slice(0, 2).map((cycles) => cycles.latest);
+  return cycles.slice(0, 1).map((cycles) => cycles.latest);
 };
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
 const ALPINE_LATEST_VERSION = ALPINE_VERSIONS[0];
+
+const generateTags = (baseVersion: string, gitRef: string) => {
+  const tags = [
+    `${gitRef}-alpine-${baseVersion}`,
+  ];
+
+  if (baseVersion.includes(".")) {
+    tags.push(...[
+      `${gitRef}-alpine-${semMinor(baseVersion)}`,
+      `${gitRef}-alpine-${semMajor(baseVersion)}`,
+    ]);
+  }
+
+  if (baseVersion === "latest") {
+    tags.push(...[
+      `${gitRef}-alpine`,
+    ]);
+  }
+
+  return tags;
+};
 
 export const createAlpineBuildTasks = (
   gitRefs: string[],
@@ -26,32 +47,33 @@ export const createAlpineBuildTasks = (
 
   const variants = gitRefs.flatMap((gitRef) =>
     ALPINE_VERSIONS.map((alpineVersion) => {
+      const isLatestGitRef = gitRef === latestGitRef;
+      const isLatestBase = alpineVersion === ALPINE_LATEST_VERSION;
       return {
         gitRef,
         alpineVersion,
-        isLatest: gitRef === latestGitRef &&
-          alpineVersion === ALPINE_LATEST_VERSION,
+        isLatestGitRef,
+        isLatestBase,
       };
     })
   );
 
   const tasks: BuildTask[] = variants.map(
-    ({ gitRef, alpineVersion, isLatest }) => {
-      const tags = [
-        `${gitRef}`,
-        `alpine-${alpineVersion}-${gitRef}`,
-        `alpine-${semMinor(alpineVersion)}-${gitRef}`,
-        `alpine-${semMajor(alpineVersion)}-${gitRef}`,
-        `alpine${alpineVersion}-${gitRef}`,
-        `alpine${semMinor(alpineVersion)}-${gitRef}`,
-        `alpine${semMajor(alpineVersion)}-${gitRef}`,
-        `${gitRef}-alpine${alpineVersion}`,
-        `${gitRef}-alpine${semMinor(alpineVersion)}`,
-        `${gitRef}-alpine${semMajor(alpineVersion)}`,
-      ];
+    ({ gitRef, alpineVersion, isLatestBase, isLatestGitRef }) => {
+      const tags = generateTags(alpineVersion, gitRef);
 
-      if (isLatest) {
-        tags.push("alpine-latest-latest", "alpine-latest");
+      if (isLatestGitRef) {
+        tags.push(...generateTags(alpineVersion, "latest"));
+      }
+
+      if (isLatestBase) {
+        tags.push(...generateTags("latest", gitRef));
+        tags.push(`${gitRef}`);
+      }
+
+      if (isLatestGitRef && isLatestBase) {
+        tags.push(...generateTags("latest", "latest"));
+        tags.push("latest");
       }
 
       return {
