@@ -22,9 +22,6 @@ export interface BuildTask {
 const REPOS = ["hertzg/rtl_433", "ghcr.io/hertzg/rtl_433_docker"];
 
 const setOutputTasks = (name: string, tasks: BuildTask[]) => {
-  console.log(tasks.map((task) => task.tags));
-  return
-
   const outputs = prepareOutput(tasks, REPOS);
 
   return setOutput(
