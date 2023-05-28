@@ -38,6 +38,7 @@ export const createAlpineBuildTasks = (
   const tasks: BuildTask[] = variants.map(
     ({ gitRef, alpineVersion, isLatest }) => {
       const tags = [
+        `${gitRef}`,
         `alpine-${alpineVersion}-${gitRef}`,
         `alpine-${semMinor(alpineVersion)}-${gitRef}`,
         `alpine-${semMajor(alpineVersion)}-${gitRef}`,
