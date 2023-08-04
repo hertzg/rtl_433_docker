@@ -96,7 +96,7 @@ pi@raspberry:~ $ docker run --device /dev/bus/usb/001/003 hertzg/rtl_433
 The `--device` or `-d` flag will share the host usb device to the container it
 will most likely be unusable by the host or any other containers.
 
-To use specifc version of `rtl_433` use the docker image tags described from the
+To use a specific version of `rtl_433` use the docker image tags described from the
 table later down
 
 ```shell script
