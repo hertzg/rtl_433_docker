@@ -24,6 +24,10 @@ const fetchLastDebianCycleCodenames = async () => {
 const DEBIAN_VERSIONS = await fetchLastDebianCycleCodenames();
 const DEBIAN_LATEST_VERSION = DEBIAN_VERSIONS[0];
 
+const BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES = new Map([
+  ["bookworm", ["19.08", "18.12"]],
+]);
+
 const generateTags = (baseVersion: string, gitRef: string) => {
   const tags = [
     `${gitRef}-debian-${baseVersion}`,
@@ -56,7 +60,18 @@ export const createDebianBuildTasks = (
     })
   );
 
-  const tasks: BuildTask[] = variants.map(
+  const tasks: BuildTask[] = variants.filter(
+    ({ gitRef, debianVersion }) => {
+      if (BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES.has(debianVersion)) {
+        const brokenRefs = BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES.get(
+          debianVersion,
+        )!;
+        return !brokenRefs.includes(gitRef);
+      }
+
+      return true;
+    },
+  ).map(
     ({ gitRef, debianVersion, isLatestGitRef, isLatestBase }) => {
       const tags = generateTags(debianVersion, gitRef);
 
@@ -75,8 +90,8 @@ export const createDebianBuildTasks = (
       return {
         name: `debian-${debianVersion}-${gitRef}`,
         gitRef: gitRef,
-        context: "./images/alpine/build-context",
-        file: "./images/alpine/build-context/Dockerfile",
+        context: "./images/debian/build-context",
+        file: "./images/debian/build-context/Dockerfile",
         tags,
         buildArgs: {
           rtl433GitVersion: gitRef,
