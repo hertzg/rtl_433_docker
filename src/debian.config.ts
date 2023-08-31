@@ -75,8 +75,8 @@ export const createDebianBuildTasks = (
       return {
         name: `debian-${debianVersion}-${gitRef}`,
         gitRef: gitRef,
-        context: "./images/alpine/build-context",
-        file: "./images/alpine/build-context/Dockerfile",
+        context: "./images/debian/build-context",
+        file: "./images/debian/build-context/Dockerfile",
         tags,
         buildArgs: {
           rtl433GitVersion: gitRef,
