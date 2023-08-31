@@ -26,14 +26,14 @@ ghcr.io/hertzg/rtl_433_docker:<rtl_433_git_ref>-<base>-<base_version>
 For convenience the **latest version of** `alpine` base is considered as
 "default" so you can just use
 
-:information_source: Keep in mind that only the ****latest release**** of
+:information_source: Keep in mind that only the \***\*latest release\*\*** of
 rtl_433 (`22.11` as of 2023-05-28) is considered `:latest` as
 `<rtl_433_git_ref>`. :information_source:
 
 ```
 docker run hertzg/rtl_433:latest -V
 
-# is the exact same image as 
+# is the exact same image as
 
 docker run hertzg/rtl_433:22.11 -V                       # as of 28 May 2023 the 22.11 is the latest released version
 docker run hertzg/rtl_433:22.11-alpine -V                # shorthand for 22.11-alpine-latest
@@ -235,20 +235,20 @@ same as above but for `docker-compose.yaml` using MQTT and InfluxDB from the
 same compose stack
 
 ```yaml
-version: '3'
+version: "3"
 services:
   rtl433:
     image: hertzg/rtl_433:latest
     devices:
-      - '/dev/bus/usb/001/003'
+      - "/dev/bus/usb/001/003"
     command:
-      - '-Mtime:unix:usec:utc'
-      - '-Mbits'
-      - '-Mlevel'
-      - '-Mprotocol'
-      - '-Mstats:2:300'
-      - '-Fmqtt://mosquitto:1883,retain=1'
-      - '-Finflux://influxdb:8086/write?db=rtl433'
+      - "-Mtime:unix:usec:utc"
+      - "-Mbits"
+      - "-Mlevel"
+      - "-Mprotocol"
+      - "-Mstats:2:300"
+      - "-Fmqtt://mosquitto:1883,retain=1"
+      - "-Finflux://influxdb:8086/write?db=rtl433"
 
   mosquitto: ...
 
@@ -263,18 +263,19 @@ following platforms:
 
 | Architecture     | Alpine | Debian |
 | ---------------- | ------ | ------ |
-| `linux/386`      | ✔️      | ➖     |
-| `linux/amd64`    | ✔️      | ✔️      |
-| `linux/arm/v5`   | ️❌     | ➖     |
-| `linux/arm/v6`   | ✔️      | ❌️     |
-| `linux/arm/v7`   | ✔️      | ✔️      |
-| `linux/arm64/v8` | ✔️      | ✔️      |
-| `linux/mips64le` | ❌️     | ✔️      |
-| `linux/ppc64le`  | ✔️      | ✔️      |
-| `linux/s390x`    | ✔️      | ✔️      |
+| `linux/386`      | ✔️     | ➖     |
+| `linux/amd64`    | ✔️     | ✔️     |
+| `linux/arm/v5`   | ️❌    | ➖     |
+| `linux/arm/v6`   | ✔️     | ❌️    |
+| `linux/arm/v7`   | ✔️     | ✔️     |
+| `linux/arm64/v8` | ✔️     | ✔️     |
+| `linux/mips64le` | ❌️    | ✔️     |
+| `linux/ppc64le`  | ✔️     | ✔️     |
+| `linux/s390x`    | ⚠️     | ✔️     |
 
 #### Legend
 
 - ✔️ : Supported and built for
+- ⚠️ : Not buildable
 - ➖ : Not supported (think of it as ❌️)
 - ❌️ : Not supported by the base image
