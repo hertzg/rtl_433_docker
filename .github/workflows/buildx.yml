@@ -22,7 +22,7 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: builds
         run: deno run --allow-net --allow-read --allow-write --allow-env src/main.ts
 
@@ -34,7 +34,7 @@ jobs:
       matrix:
         gitRef: ${{ fromJSON(needs.setup.outputs.gitRefs) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: 'merbanan/rtl_433'
           ref: ${{ matrix.gitRef }}
@@ -55,7 +55,7 @@ jobs:
         include: ${{ fromJSON(needs.setup.outputs.alpineTasks) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
         with:
@@ -105,7 +105,7 @@ jobs:
         include: ${{ fromJSON(needs.setup.outputs.debianTasks) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
         with:
