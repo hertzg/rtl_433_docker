@@ -82,7 +82,7 @@ jobs:
           mkdir rtl_433
           tar xf ${{ matrix.gitRef }}.tar.gz --directory ./rtl_433
           rm -f ${{ matrix.gitRef }}.tar.gz
-      - uses: docker/build-push-action@v4
+      - uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
@@ -132,7 +132,7 @@ jobs:
           mkdir rtl_433
           tar xf ${{ matrix.gitRef }}.tar.gz --directory ./rtl_433
           rm -f ${{ matrix.gitRef }}.tar.gz
-      - uses: docker/build-push-action@v4
+      - uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
