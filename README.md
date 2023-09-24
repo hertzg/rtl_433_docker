@@ -20,6 +20,7 @@ platforms (mainly `x86`, `arm` and more).
 
 ```
 hertzg/rtl_433:<rtl_433_git_ref>-<base>-<base_version>
+hertzg/rtl433:<rtl_433_git_ref>-<base>-<base_version>
 ghcr.io/hertzg/rtl_433_docker:<rtl_433_git_ref>-<base>-<base_version>
 ```
 
