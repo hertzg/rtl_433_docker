@@ -13,7 +13,10 @@ const fetchLastAlpineCycleVersions = async () => {
     lts: boolean;
   }>;
 
-  return cycles.slice(0, 2).map((cycles) => cycles.latest);
+  return cycles
+    .filter((cycle) => cycle.cycle !== "3.19")
+    .slice(0, 2)
+    .map((cycles) => cycles.latest);
 };
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
@@ -27,7 +30,7 @@ const generateTags = (baseVersion: string, gitRef: string) => {
       ...[
         `${gitRef}-alpine-${semMinor(baseVersion)}`,
         `${gitRef}-alpine-${semMajor(baseVersion)}`,
-      ],
+      ]
     );
   }
 
@@ -93,7 +96,7 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
         cacheFrom: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
       };
-    },
+    }
   );
 
   return tasks;
