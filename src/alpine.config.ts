@@ -4,14 +4,14 @@ import { semMajor, semMinor, sortRtl433TagsDesc } from "./utils.ts";
 const fetchLastAlpineCycleVersions = async () => {
   const res = await fetch("https://endoflife.date/api/alpine.json");
 
-  const cycles = await res.json() as (Array<{
-    "cycle": string;
-    "releaseDate": string;
-    "eol": string;
-    "latest": string;
-    "latestReleaseDate": string;
-    "lts": boolean;
-  }>);
+  const cycles = (await res.json()) as Array<{
+    cycle: string;
+    releaseDate: string;
+    eol: string;
+    latest: string;
+    latestReleaseDate: string;
+    lts: boolean;
+  }>;
 
   return cycles.slice(0, 2).map((cycles) => cycles.latest);
 };
@@ -20,29 +20,25 @@ const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
 const ALPINE_LATEST_VERSION = ALPINE_VERSIONS[0];
 
 const generateTags = (baseVersion: string, gitRef: string) => {
-  const tags = [
-    `${gitRef}-alpine-${baseVersion}`,
-  ];
+  const tags = [`${gitRef}-alpine-${baseVersion}`];
 
   if (baseVersion.includes(".")) {
-    tags.push(...[
-      `${gitRef}-alpine-${semMinor(baseVersion)}`,
-      `${gitRef}-alpine-${semMajor(baseVersion)}`,
-    ]);
+    tags.push(
+      ...[
+        `${gitRef}-alpine-${semMinor(baseVersion)}`,
+        `${gitRef}-alpine-${semMajor(baseVersion)}`,
+      ],
+    );
   }
 
   if (baseVersion === "latest") {
-    tags.push(...[
-      `${gitRef}-alpine`,
-    ]);
+    tags.push(...[`${gitRef}-alpine`]);
   }
 
   return tags;
 };
 
-export const createAlpineBuildTasks = (
-  gitRefs: string[],
-): BuildTask[] => {
+export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
   const [latestGitRef] = sortRtl433TagsDesc(gitRefs);
 
   const variants = gitRefs.flatMap((gitRef) =>
