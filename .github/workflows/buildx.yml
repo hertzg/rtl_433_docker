@@ -110,7 +110,7 @@ jobs:
       - uses: docker/setup-buildx-action@v3
         with:
           version: latest
-          config-inline: |
+          buildkitd-config-inline: |
             [registry."docker.io"]
               mirrors = ["mirror.gcr.io"]
       - if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
