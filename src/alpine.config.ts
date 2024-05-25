@@ -13,10 +13,7 @@ const fetchLastAlpineCycleVersions = async () => {
     lts: boolean;
   }>;
 
-  return cycles
-    .filter((cycle) => cycle.cycle !== "3.19")
-    .slice(0, 2)
-    .map((cycles) => cycles.latest);
+  return cycles.slice(0, 2).map((cycles) => cycles.latest);
 };
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();

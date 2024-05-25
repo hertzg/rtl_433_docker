@@ -4,7 +4,7 @@ FROM alpine:${alpineVersion} as builder
 RUN apk add --no-cache --virtual .buildDeps \
     build-base \
     libusb-dev \
-    libressl-dev \
+    openssl-dev \
     librtlsdr-dev \
     cmake \
     git
@@ -29,7 +29,7 @@ ARG rtl433GitRevision=master
 LABEL maintainer="georgedot@gmail.com" \
     vcs-ref="${rtl433GitRevision}"
 
-RUN apk add --no-cache libusb librtlsdr tzdata libressl
+RUN apk add --no-cache libusb librtlsdr tzdata openssl
 WORKDIR /root
 COPY --from=builder /build/root/ /
 
