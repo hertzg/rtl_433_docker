@@ -34,11 +34,8 @@ jobs:
       matrix:
         gitRef: ${{ fromJSON(needs.setup.outputs.gitRefs) }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: "merbanan/rtl_433"
-          ref: ${{ matrix.gitRef }}
-      - run: git archive ${{ matrix.gitRef }} --format tar.gz --output ${{ matrix.gitRef }}.tar.gz
+      - run: git clone --depth 1 --branch ${{ matrix.gitRef }} https://github.com/merbanan/rtl_433 ./rtl_433
+      - run: tar czf ${{ matrix.gitRef }}.tar.gz ./rtl_433
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.gitRef }}
