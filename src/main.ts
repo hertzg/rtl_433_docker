@@ -42,7 +42,10 @@ tags.push(
 
 const alpineTasks = createAlpineBuildTasks(tags);
 const debianTasks = createDebianBuildTasks(tags);
-const tasks = [...alpineTasks, ...debianTasks];
+
+const tasks = [...alpineTasks, ...debianTasks].sort(
+  (a, b) => a.name.localeCompare(b.name) * -1
+);
 
 interface TaskGroup {
   [key: string]: {
