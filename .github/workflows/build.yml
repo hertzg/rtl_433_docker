@@ -15,7 +15,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      groups: ${{ fromJson(steps.config.outputs.matrix) }}
+      groups: ${{ steps.config.outputs.matrix }}
     steps:
       - uses: denoland/setup-deno@v1
         with:
@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/build-group.yml
     strategy:
       matrix:
-        include: ${{ needs.setup.outputs.groups }}
+        include: ${{ fromJson(needs.setup.outputs.groups) }}
       fail-fast: false
     with:
       tasks: ${{ matrix.tasks }}
