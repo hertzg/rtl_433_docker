@@ -27,7 +27,7 @@ const generateTags = (baseVersion: string, gitRef: string) => {
       ...[
         `${gitRef}-alpine-${semMinor(baseVersion)}`,
         `${gitRef}-alpine-${semMajor(baseVersion)}`,
-      ]
+      ],
     );
   }
 
@@ -93,7 +93,7 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
         cacheFrom: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
       };
-    }
+    },
   );
 
   return tasks;

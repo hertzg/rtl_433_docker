@@ -28,16 +28,14 @@ const REPOS = [
 const setOutputTasks = (name: string, tasks: BuildTask[]) => {
   const outputs = prepareOutput(tasks, REPOS);
 
-  return setOutput(
-    name,
-    outputs,
-  );
+  return setOutput(name, outputs);
 };
 
-const tags = (await getGithubRepoTags("merbanan/rtl_433")).map((tag) =>
-  tag.name
-).filter((tag) => /^[0-9\.]*$/i.test(tag));
+const tags = (await getGithubRepoTags("merbanan/rtl_433"))
+  .map((tag) => tag.name)
+  .filter((tag) => /^[0-9\.]*$/i.test(tag));
 tags.push("master", "nightly");
+
 setOutput("gitRefs", tags);
 
 const alpineTasks = createAlpineBuildTasks(tags);
