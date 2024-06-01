@@ -1,5 +1,8 @@
 .idea/
-.vscode/
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 
 node_modules/
 

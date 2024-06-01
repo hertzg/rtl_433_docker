@@ -15,15 +15,16 @@ export const semMajor = (sem: string) => semUp(sem, 1);
 
 const RTL433_TAG_REGEX = /^(\d+)\.(\d+)$/i;
 export const sortRtl433TagsDesc = (tags: string[]) => {
-  return tags.filter((tag) => RTL433_TAG_REGEX.test(tag))
+  return tags
+    .filter((tag) => RTL433_TAG_REGEX.test(tag))
     .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
 };
 
 export const prepareOutput = (tasks: BuildTask[], repos: string[]) => {
   return tasks.map((task) => {
-    const tags = task.tags.flatMap((tag) =>
-      repos.map((repo) => `${repo}:${tag}`)
-    ).join("\n");
+    const tags = task.tags
+      .flatMap((tag) => repos.map((repo) => `${repo}:${tag}`))
+      .join("\n");
 
     const buildArgs = Object.entries(task.buildArgs)
       .map(([key, value]) => `${key}=${value}`)
