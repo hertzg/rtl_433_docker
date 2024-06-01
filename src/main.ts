@@ -32,12 +32,12 @@ const REPOS = [
   "ghcr.io/hertzg/rtl_433_docker",
 ];
 
-const tags: string[] = ["master"]; //, "nightly"];
-// tags.push(
-//   ...(await getGithubRepoTags("merbanan/rtl_433"))
-//     .map((tag) => tag.name)
-//     .filter((tag) => /^[0-9\.]*$/i.test(tag))
-// );
+const tags: string[] = ["master", "nightly"];
+tags.push(
+  ...(await getGithubRepoTags("merbanan/rtl_433"))
+    .map((tag) => tag.name)
+    .filter((tag) => /^[0-9\.]*$/i.test(tag))
+);
 
 const alpineTasks = createAlpineBuildTasks(tags);
 const debianTasks = createDebianBuildTasks(tags);
