@@ -18,7 +18,6 @@ WORKDIR ./rtl_433
 WORKDIR ./build
 RUN cmake -DENABLE_OPENSSL=ON ..
 RUN make
-RUN cat Makefile
 WORKDIR /build/root
 WORKDIR /build/rtl_433/build
 RUN make DESTDIR=/build/root/ install
