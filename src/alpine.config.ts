@@ -76,7 +76,7 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
       }
 
       return {
-        name: `alpine-${alpineVersion}-${gitRef}`,
+        name: `${gitRef}-alpine-${alpineVersion}`,
         gitRef: gitRef,
         context: "./images/alpine/build-context",
         file: "./images/alpine/build-context/Dockerfile",

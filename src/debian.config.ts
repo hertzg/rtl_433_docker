@@ -81,7 +81,7 @@ export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
       }
 
       return {
-        name: `debian-${debianVersion}-${gitRef}`,
+        name: `${gitRef}-debian-${debianVersion}`,
         gitRef: gitRef,
         context: "./images/debian/build-context",
         file: "./images/debian/build-context/Dockerfile",

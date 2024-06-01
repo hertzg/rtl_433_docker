@@ -92,7 +92,7 @@ for (const task of tasks) {
   for (const platform of task.platforms) {
     const suffixedTags = task.tags.map((tag) => `${tag}-${tagify(platform)}`);
     groups[groupKey].tasks.push({
-      name: task.name,
+      name: platform,
       gitRef: task.gitRef,
       context: task.context,
       file: task.file,
