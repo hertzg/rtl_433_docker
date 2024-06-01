@@ -37,7 +37,6 @@ tags.push(
   ...(await getGithubRepoTags("merbanan/rtl_433"))
     .map((tag) => tag.name)
     .filter((tag) => /^[0-9\.]*$/i.test(tag))
-    .slice(0, 1)
 );
 
 const alpineTasks = createAlpineBuildTasks(tags);
