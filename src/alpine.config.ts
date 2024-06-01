@@ -13,7 +13,10 @@ const fetchLastAlpineCycleVersions = async () => {
     lts: boolean;
   }>;
 
-  return cycles.slice(0, 2).map((cycles) => cycles.latest);
+  return cycles
+    .slice(0, 2)
+    .map((cycles) => cycles.latest)
+    .slice(0, 1);
 };
 
 const ALPINE_VERSIONS = await fetchLastAlpineCycleVersions();
@@ -27,7 +30,7 @@ const generateTags = (baseVersion: string, gitRef: string) => {
       ...[
         `${gitRef}-alpine-${semMinor(baseVersion)}`,
         `${gitRef}-alpine-${semMajor(baseVersion)}`,
-      ],
+      ]
     );
   }
 
@@ -73,7 +76,7 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
       }
 
       return {
-        name: `alpine-${alpineVersion}-${gitRef}`,
+        name: `${gitRef}-alpine-${alpineVersion}`,
         gitRef: gitRef,
         context: "./images/alpine/build-context",
         file: "./images/alpine/build-context/Dockerfile",
@@ -83,17 +86,17 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
           alpineVersion: alpineVersion,
         },
         platforms: [
-          "linux/386",
           "linux/amd64",
+          "linux/arm64/v8",
           "linux/arm/v6",
           "linux/arm/v7",
-          "linux/arm64/v8",
           "linux/ppc64le",
+          // "linux/386",
         ],
         cacheFrom: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
       };
-    },
+    }
   );
 
   return tasks;

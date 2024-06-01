@@ -18,7 +18,8 @@ const fetchLastDebianCycleCodenames = async () => {
 
   return cycles
     .slice(0, 2)
-    .map((cycles) => cycles.codename.toLocaleLowerCase());
+    .map((cycles) => cycles.codename.toLocaleLowerCase())
+    .slice(0, 1);
 };
 
 const DEBIAN_VERSIONS = await fetchLastDebianCycleCodenames();
@@ -57,9 +58,8 @@ export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
   const tasks: BuildTask[] = variants
     .filter(({ gitRef, debianVersion }) => {
       if (BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES.has(debianVersion)) {
-        const brokenRefs = BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES.get(
-          debianVersion,
-        )!;
+        const brokenRefs =
+          BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES.get(debianVersion)!;
         return !brokenRefs.includes(gitRef);
       }
 
@@ -81,7 +81,7 @@ export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
       }
 
       return {
-        name: `debian-${debianVersion}-${gitRef}`,
+        name: `${gitRef}-debian-${debianVersion}`,
         gitRef: gitRef,
         context: "./images/debian/build-context",
         file: "./images/debian/build-context/Dockerfile",
