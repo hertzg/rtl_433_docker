@@ -1,4 +1,4 @@
-name: Buildx
+name: 🐳
 
 on:
   workflow_dispatch:
