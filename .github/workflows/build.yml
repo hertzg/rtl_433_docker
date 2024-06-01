@@ -34,6 +34,6 @@ jobs:
         include: ${{ fromJson(needs.setup.outputs.groups) }}
       fail-fast: false
     with:
-      tasks: ${{ matrix.tasks }}
+      tasks: ${{ toJson(matrix.tasks) }}
       push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
       manifests: ${{ matrix.manifests }}
