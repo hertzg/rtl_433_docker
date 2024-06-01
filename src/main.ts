@@ -31,12 +31,12 @@ const setOutputTasks = (name: string, tasks: BuildTask[]) => {
   return setOutput(name, outputs);
 };
 
-const tags = (await getGithubRepoTags("merbanan/rtl_433"))
-  .map((tag) => tag.name)
-  .filter((tag) => /^[0-9\.]*$/i.test(tag));
-tags.push("master", "nightly");
-
-setOutput("gitRefs", tags);
+const tags: string[] = ["master", "nightly"];
+tags.push(
+  ...(await getGithubRepoTags("merbanan/rtl_433"))
+    .map((tag) => tag.name)
+    .filter((tag) => /^[0-9\.]*$/i.test(tag))
+);
 
 const alpineTasks = createAlpineBuildTasks(tags);
 setOutputTasks("alpineTasks", alpineTasks);
