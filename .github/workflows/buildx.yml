@@ -54,7 +54,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: git clone --branch ${{ matrix.gitRef }} https://github.com/merbanan/rtl_433 ./rtl_433
+      - run: git clone --branch ${{ matrix.gitRef }} https://github.com/merbanan/rtl_433 ${{ matrix.context }}/rtl_433
       - uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
@@ -95,7 +95,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: git clone --branch ${{ matrix.gitRef }} https://github.com/merbanan/rtl_433 ./rtl_433
+      - run: git clone --branch ${{ matrix.gitRef }} https://github.com/merbanan/rtl_433 ${{ matrix.context }}/rtl_433
       - uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
