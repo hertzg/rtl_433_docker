@@ -84,10 +84,7 @@ const generateRunAfterScript = (task: BuildTask) => {
 };
 
 const platformToRunner = (platform: string) => {
-  const [os, arch, ...rest] = platform.split("/");
-  if (arch.includes("arm")) {
-    return "macos-14";
-  }
+  //  const [os, arch, ...rest] = platform.split("/");
 
   return "ubuntu-24.04";
 };
