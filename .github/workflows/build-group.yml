@@ -17,8 +17,8 @@ on:
 
 jobs:
   build:
-    name: 🚀 ${{ matrix.name }} 
-    runs-on: ubuntu-latest
+    name: 🧩 ${{ matrix.name }}
+    runs-on: ${{ matrix.runsOn }}
     strategy:
       matrix:
         include: ${{ fromJson(inputs.tasks) }}

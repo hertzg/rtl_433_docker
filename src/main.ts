@@ -60,6 +60,7 @@ interface TaskGroupEntry {
   context: string;
   file: string;
   tags: string;
+  runsOn: string;
   buildArgs: string;
   platforms: string;
   cacheFrom: string;
@@ -82,6 +83,15 @@ const generateRunAfterScript = (task: BuildTask) => {
   return lines;
 };
 
+const platformToRunner = (platform: string) => {
+  const [os, arch, ...rest] = platform.split("/");
+  if (arch.includes("arm")) {
+    return "macos-14";
+  }
+
+  return "ubuntu-24.04";
+};
+
 const groups: TaskGroup = {};
 for (const task of tasks) {
   const groupKey = `${task.name}`;
@@ -100,6 +110,7 @@ for (const task of tasks) {
       gitRef: task.gitRef,
       context: task.context,
       file: task.file,
+      runsOn: platformToRunner(platform),
       tags: stringifyTagsWithRepos(suffixedTags, REPOS),
       buildArgs: stringifyBuildArgs(task.buildArgs),
       platforms: stringifyPlatforms([platform]),
