@@ -1,5 +1,9 @@
 {
   "tasks": {
     "dev": "deno run --watch src/main.ts"
+  },
+  "imports": {
+    "@actions/core": "npm:@actions/core@^1.10.1",
+    "@std/cli": "jsr:@std/cli@^0.224.4"
   }
 }

@@ -1,0 +1,39 @@
+name: Buildx
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ fromJson(steps.config.outputs.matrix) }}
+    steps:
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - uses: actions/checkout@v4
+      - id: config
+        run: deno run --allow-net --allow-read --allow-write --allow-env src/main.ts
+
+  builds:
+    name: 📡 ${{ matrix.name }}
+    needs:
+      - setup
+    uses: ./.github/workflows/build-group.yml
+    strategy:
+      matrix:
+        include: ${{ needs.setup.outputs.groups }}
+      fail-fast: false
+    with:
+      tasks: ${{ matrix.tasks }}
+      push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
+      manifests: ${{ matrix.manifests }}
