@@ -1,5 +1,5 @@
 ARG alpineVersion=latest
-FROM alpine:${alpineVersion} as builder
+FROM alpine:${alpineVersion} AS builder
 
 RUN apk add --no-cache --virtual .buildDeps \
     build-base \

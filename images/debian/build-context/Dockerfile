@@ -1,5 +1,5 @@
 ARG debianVersion=latest
-FROM debian:${debianVersion} as builder
+FROM debian:${debianVersion} AS builder
 
 RUN apt-get update && apt-get install -y \
     build-essential \
