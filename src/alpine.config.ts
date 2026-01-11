@@ -41,7 +41,10 @@ const generateTags = (baseVersion: string, gitRef: string) => {
   return tags;
 };
 
-export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
+export const createAlpineBuildTasks = (
+  gitRefs: string[],
+  gitRefShas: Map<string, string>
+): BuildTask[] => {
   const [latestGitRef] = sortRtl433TagsDesc(gitRefs);
 
   const variants = gitRefs.flatMap((gitRef) =>
@@ -75,6 +78,8 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
         tags.push("latest");
       }
 
+      const gitSha = gitRefShas.get(gitRef) ?? "unknown";
+
       return {
         name: `${gitRef}-alpine-${alpineVersion}`,
         gitRef: gitRef,
@@ -83,6 +88,7 @@ export const createAlpineBuildTasks = (gitRefs: string[]): BuildTask[] => {
         tags,
         buildArgs: {
           rtl433GitVersion: gitRef,
+          rtl433GitSha: gitSha,
           alpineVersion: alpineVersion,
         },
         platforms: [

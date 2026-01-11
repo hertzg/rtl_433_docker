@@ -1,7 +1,7 @@
 import { createAlpineBuildTasks } from "./alpine.config.ts";
 import { createDebianBuildTasks } from "./debian.config.ts";
 import { setOutput } from "@actions/core";
-import { getGithubRepoTags } from "./github.ts";
+import { getGithubRepoTags, getGithubRefCommit } from "./github.ts";
 import {
   tagify,
   stringifyTagsWithRepos,
@@ -20,6 +20,7 @@ export interface BuildTask {
   buildArgs: {
     [key: string]: string;
     rtl433GitVersion: string;
+    rtl433GitSha: string;
   };
   platforms: string[];
   cacheFrom: string;
@@ -42,8 +43,19 @@ tags.push(
     .slice(0, MAX_RELEASE_VERSIONS)
 );
 
-const alpineTasks = createAlpineBuildTasks(tags);
-const debianTasks = createDebianBuildTasks(tags);
+// Fetch commit SHAs for each ref to enable proper cache busting
+// For tags: SHA is immutable, so cache is stable
+// For branches (master): SHA changes, so cache is invalidated on new commits
+const gitRefShas = new Map<string, string>();
+await Promise.all(
+  tags.map(async (tag) => {
+    const commit = await getGithubRefCommit("merbanan/rtl_433", tag);
+    gitRefShas.set(tag, commit.sha);
+  })
+);
+
+const alpineTasks = createAlpineBuildTasks(tags, gitRefShas);
+const debianTasks = createDebianBuildTasks(tags, gitRefShas);
 
 const tasks = [...alpineTasks, ...debianTasks].sort(
   (a, b) => a.name.localeCompare(b.name) * -1
