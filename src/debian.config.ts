@@ -27,6 +27,7 @@ const DEBIAN_LATEST_VERSION = DEBIAN_VERSIONS[0];
 
 const BROKEN_RTLVERSIONS_FOR_DEBIAN_CYCLES = new Map([
   ["bookworm", ["19.08", "18.12"]],
+  ["trixie", ["18.12"]],
 ]);
 
 const generateTags = (baseVersion: string, gitRef: string) => {
