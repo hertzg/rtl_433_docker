@@ -32,11 +32,14 @@ const REPOS = [
   "ghcr.io/hertzg/rtl_433_docker",
 ];
 
+const MAX_RELEASE_VERSIONS = 3;
+
 const tags: string[] = ["master"];
 tags.push(
   ...(await getGithubRepoTags("merbanan/rtl_433"))
     .map((tag) => tag.name)
     .filter((tag) => /^[0-9\.]*$/i.test(tag))
+    .slice(0, MAX_RELEASE_VERSIONS)
 );
 
 const alpineTasks = createAlpineBuildTasks(tags);
@@ -83,7 +86,12 @@ const generateRunAfterScript = (task: BuildTask) => {
 };
 
 const platformToRunner = (platform: string) => {
-  //  const [os, arch, ...rest] = platform.split("/");
+  const [, arch] = platform.split("/");
+
+  // Use native ARM64 runners for arm64 builds (no QEMU needed)
+  if (arch === "arm64") {
+    return "ubuntu-24.04-arm";
+  }
 
   return "ubuntu-24.04";
 };
@@ -101,6 +109,7 @@ for (const task of tasks) {
 
   for (const platform of task.platforms) {
     const suffixedTags = task.tags.map((tag) => `${tag}-${tagify(platform)}`);
+    const platformSuffix = tagify(platform);
     groups[groupKey].tasks.push({
       name: platform,
       gitRef: task.gitRef,
@@ -110,8 +119,8 @@ for (const task of tasks) {
       tags: stringifyTagsWithRepos(suffixedTags, REPOS),
       buildArgs: stringifyBuildArgs(task.buildArgs),
       platforms: stringifyPlatforms([platform]),
-      cacheFrom: task.cacheFrom,
-      cacheTo: task.cacheTo,
+      cacheFrom: `${task.cacheFrom}-${platformSuffix}`,
+      cacheTo: `${task.cacheTo}-${platformSuffix},mode=max`,
     });
   }
 }
