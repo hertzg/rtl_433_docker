@@ -16,3 +16,17 @@ export const getGithubRepoTags = async (
   const tags = await res.json();
   return tags;
 };
+
+export interface GithubCommit {
+  sha: string;
+  url: string;
+}
+
+export const getGithubRefCommit = async (
+  repo: string,
+  ref: string,
+): Promise<GithubCommit> => {
+  const res = await fetch(`https://api.github.com/repos/${repo}/commits/${ref}`);
+  const commit = await res.json();
+  return { sha: commit.sha, url: commit.url };
+};

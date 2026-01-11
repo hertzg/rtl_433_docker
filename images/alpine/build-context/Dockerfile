@@ -11,9 +11,15 @@ RUN apk add --no-cache --virtual .buildDeps \
 
 WORKDIR /build
 
-ADD ./rtl_433 ./rtl_433
-WORKDIR ./rtl_433
-WORKDIR ./build
+# Clone rtl_433 inside the Dockerfile for better layer caching
+# The cache key is based on the ARG values, not file timestamps
+# rtl433GitSha is used to bust cache when branch HEAD changes (e.g., master)
+ARG rtl433GitVersion=master
+ARG rtl433GitSha=latest
+RUN git clone --depth 1 --branch ${rtl433GitVersion} https://github.com/merbanan/rtl_433 ./rtl_433 \
+    && echo "Built from ${rtl433GitVersion} @ ${rtl433GitSha}"
+
+WORKDIR ./rtl_433/build
 RUN cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DENABLE_OPENSSL=ON ..
 RUN make
 WORKDIR /build/root

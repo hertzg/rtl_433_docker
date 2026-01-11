@@ -40,7 +40,10 @@ const generateTags = (baseVersion: string, gitRef: string) => {
   return tags;
 };
 
-export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
+export const createDebianBuildTasks = (
+  gitRefs: string[],
+  gitRefShas: Map<string, string>
+): BuildTask[] => {
   const [latestGitRef] = sortRtl433TagsDesc(gitRefs);
 
   const variants = gitRefs.flatMap((gitRef) =>
@@ -81,6 +84,8 @@ export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
         tags.push(...generateTags("latest", "latest"));
       }
 
+      const gitSha = gitRefShas.get(gitRef) ?? "unknown";
+
       return {
         name: `${gitRef}-debian-${debianVersion}`,
         gitRef: gitRef,
@@ -89,6 +94,7 @@ export const createDebianBuildTasks = (gitRefs: string[]): BuildTask[] => {
         tags,
         buildArgs: {
           rtl433GitVersion: gitRef,
+          rtl433GitSha: gitSha,
           debianVersion: debianVersion,
         },
         platforms: [
