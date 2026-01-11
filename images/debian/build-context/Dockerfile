@@ -16,7 +16,7 @@ WORKDIR /build
 ADD ./rtl_433 ./rtl_433
 WORKDIR ./rtl_433
 WORKDIR ./build
-RUN cmake -DENABLE_OPENSSL=ON ..
+RUN cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DENABLE_OPENSSL=ON ..
 RUN make
 WORKDIR /build/root
 WORKDIR /build/rtl_433/build
