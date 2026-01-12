@@ -88,13 +88,7 @@ const generateManifestCmd = (repo: string, tag: string, platformSuffix: string):
   const manifest = `${repo}:${tag}`;
   const platformImg = `${manifest}-${platformSuffix}`;
   // Retry loop: create/amend manifest, verify platform is included, retry if not
-  return [
-    `for i in 1 2 3 4 5; do`,
-    `  docker buildx imagetools create -t ${manifest} ${manifest} ${platformImg} 2>/dev/null || docker buildx imagetools create -t ${manifest} ${platformImg}`,
-    `  docker buildx imagetools inspect ${manifest} --raw | grep -q ${platformSuffix} && break`,
-    `  sleep $i`,
-    `done`,
-  ].join("; ");
+  return `for i in 1 2 3 4 5; do docker buildx imagetools create -t ${manifest} ${manifest} ${platformImg} 2>/dev/null || docker buildx imagetools create -t ${manifest} ${platformImg}; docker buildx imagetools inspect ${manifest} --raw | grep -q ${platformSuffix} && break; sleep $i; done`;
 };
 
 const groups: Record<string, TaskGroupEntry[]> = {};
