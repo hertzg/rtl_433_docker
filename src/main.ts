@@ -27,11 +27,9 @@ export interface BuildTask {
   cacheTo: string;
 }
 
-const REPOS = [
-  "hertzg/rtl433",
-  "hertzg/rtl_433",
-  "ghcr.io/hertzg/rtl_433_docker",
-];
+const GHCR_REPO = "ghcr.io/hertzg/rtl_433_docker";
+const DOCKER_HUB_REPOS = ["hertzg/rtl433", "hertzg/rtl_433"];
+const REPOS = [...DOCKER_HUB_REPOS, GHCR_REPO];
 
 const MAX_RELEASE_VERSIONS = 3;
 
@@ -80,11 +78,16 @@ const platformToRunner = (platform: string) => {
   return "ubuntu-24.04";
 };
 
-// Generate manifest create command for a tag across all platforms
-const generateManifestCmd = (repo: string, tag: string, platforms: string[]): string => {
-  const manifest = `${repo}:${tag}`;
+// Generate GHCR manifest create command for a tag across all platforms
+const generateGhcrManifestCmd = (tag: string, platforms: string[]): string => {
+  const manifest = `${GHCR_REPO}:${tag}`;
   const platformImages = platforms.map((p) => `${manifest}-${tagify(p)}`).join(" ");
   return `docker buildx imagetools create -t ${manifest} ${platformImages}`;
+};
+
+// Generate skopeo copy command to copy from GHCR to Docker Hub
+const generateSkopeoCopyCmd = (tag: string, destRepo: string): string => {
+  return `skopeo copy --all docker://${GHCR_REPO}:${tag} docker://${destRepo}:${tag}`;
 };
 
 interface GroupData {
@@ -119,15 +122,21 @@ for (const task of tasks) {
 }
 
 const groupEntries = Object.entries(groups).map(([key, { tasks, originalTask }]) => {
-  // Generate all manifest commands for this group (all repos × all tags)
-  const manifestCmds = REPOS.flatMap((repo) =>
-    originalTask.tags.map((tag) => generateManifestCmd(repo, tag, originalTask.platforms))
+  // Step 1: Create manifests on GHCR (no rate limits)
+  const ghcrManifestCmds = originalTask.tags
+    .map((tag) => generateGhcrManifestCmd(tag, originalTask.platforms))
+    .join("\n");
+
+  // Step 2: Copy from GHCR to Docker Hub repos using skopeo
+  const skopeoCopyCmds = DOCKER_HUB_REPOS.flatMap((repo) =>
+    originalTask.tags.map((tag) => generateSkopeoCopyCmd(tag, repo))
   ).join("\n");
 
   return {
     name: key,
     tasks,
-    manifestCmds,
+    ghcrManifestCmds,
+    skopeoCopyCmds,
   };
 });
 setOutput("matrix", groupEntries);

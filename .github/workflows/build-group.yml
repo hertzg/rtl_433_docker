@@ -10,7 +10,11 @@ on:
         required: true
         type: boolean
         default: false
-      manifestCmds:
+      ghcrManifestCmds:
+        required: false
+        type: string
+        default: ""
+      skopeoCopyCmds:
         required: false
         type: string
         default: ""
@@ -57,7 +61,7 @@ jobs:
   manifest:
     name: 📦 Manifest
     needs: build
-    if: ${{ inputs.push && inputs.manifestCmds != '' }}
+    if: ${{ inputs.push && inputs.ghcrManifestCmds != '' }}
     runs-on: ubuntu-latest
     concurrency:
       group: docker-manifest
@@ -72,12 +76,22 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create multi-arch manifests
+      - name: Create GHCR multi-arch manifests
         run: |
-          echo '${{ inputs.manifestCmds }}' | while IFS= read -r cmd; do
+          echo '${{ inputs.ghcrManifestCmds }}' | while IFS= read -r cmd; do
+            [ -z "$cmd" ] && continue
+            eval "$cmd"
+          done
+      - name: Copy to Docker Hub with skopeo
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo '${{ inputs.skopeoCopyCmds }}' | while IFS= read -r cmd; do
             [ -z "$cmd" ] && continue
             for attempt in 1 2 3 4 5; do
-              if eval "$cmd"; then
+              if $cmd --src-creds="${{ github.actor }}:${GITHUB_TOKEN}" --dest-creds="${DOCKER_USERNAME}:${DOCKER_PASSWORD}"; then
                 break
               fi
               echo "Attempt $attempt failed, waiting ${attempt}0s..."
