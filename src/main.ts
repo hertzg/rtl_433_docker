@@ -72,8 +72,6 @@ interface TaskGroupEntry {
   platforms: string;
   cacheFrom: string;
   cacheTo: string;
-  // Manifest amend commands for this platform
-  manifestCmds: string;
 }
 
 const platformToRunner = (platform: string) => {
@@ -82,32 +80,30 @@ const platformToRunner = (platform: string) => {
   return "ubuntu-24.04";
 };
 
-// Generate manifest amend command for a single platform
-// Includes retry with verification to handle race conditions
-const generateManifestCmd = (repo: string, tag: string, platformSuffix: string): string => {
+// Generate manifest create command for a tag across all platforms
+const generateManifestCmd = (repo: string, tag: string, platforms: string[]): string => {
   const manifest = `${repo}:${tag}`;
-  const platformImg = `${manifest}-${platformSuffix}`;
-  // Retry loop: create/amend manifest, verify platform is included, retry if not
-  return `for i in 1 2 3 4 5; do docker buildx imagetools create -t ${manifest} ${manifest} ${platformImg} 2>/dev/null || docker buildx imagetools create -t ${manifest} ${platformImg}; docker buildx imagetools inspect ${manifest} --raw | grep -q ${platformSuffix} && break; sleep $i; done`;
+  const platformImages = platforms.map((p) => `${manifest}-${tagify(p)}`).join(" ");
+  return `docker buildx imagetools create -t ${manifest} ${platformImages}`;
 };
 
-const groups: Record<string, TaskGroupEntry[]> = {};
+interface GroupData {
+  tasks: TaskGroupEntry[];
+  originalTask: BuildTask;
+}
+
+const groups: Record<string, GroupData> = {};
 for (const task of tasks) {
   const groupKey = task.name;
   if (!groups[groupKey]) {
-    groups[groupKey] = [];
+    groups[groupKey] = { tasks: [], originalTask: task };
   }
 
   for (const platform of task.platforms) {
     const suffixedTags = task.tags.map((tag) => `${tag}-${tagify(platform)}`);
     const platformSuffix = tagify(platform);
 
-    // Generate manifest amend commands for this platform
-    const manifestCmds = REPOS.flatMap((repo) =>
-      task.tags.map((tag) => generateManifestCmd(repo, tag, platformSuffix))
-    ).join("\n");
-
-    groups[groupKey].push({
+    groups[groupKey].tasks.push({
       name: platform,
       gitRef: task.gitRef,
       context: task.context,
@@ -118,13 +114,20 @@ for (const task of tasks) {
       platforms: stringifyPlatforms([platform]),
       cacheFrom: `${task.cacheFrom}-${platformSuffix}`,
       cacheTo: `${task.cacheTo}-${platformSuffix},mode=max`,
-      manifestCmds,
     });
   }
 }
 
-const groupEntries = Object.entries(groups).map(([key, tasks]) => ({
-  name: key,
-  tasks,
-}));
+const groupEntries = Object.entries(groups).map(([key, { tasks, originalTask }]) => {
+  // Generate all manifest commands for this group (all repos × all tags)
+  const manifestCmds = REPOS.flatMap((repo) =>
+    originalTask.tags.map((tag) => generateManifestCmd(repo, tag, originalTask.platforms))
+  ).join("\n");
+
+  return {
+    name: key,
+    tasks,
+    manifestCmds,
+  };
+});
 setOutput("matrix", groupEntries);
