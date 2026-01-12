@@ -59,6 +59,9 @@ jobs:
     needs: build
     if: ${{ inputs.push && inputs.manifestCmds != '' }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: docker-manifest
+      cancel-in-progress: false
     steps:
       - uses: docker/login-action@v3
         with:
@@ -71,4 +74,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create multi-arch manifests
         run: |
-          echo '${{ inputs.manifestCmds }}' | xargs -P 1 -d '\n' -I {} sh -c '{}'
+          echo '${{ inputs.manifestCmds }}' | while IFS= read -r cmd; do
+            [ -z "$cmd" ] && continue
+            for attempt in 1 2 3 4 5; do
+              if eval "$cmd"; then
+                break
+              fi
+              echo "Attempt $attempt failed, waiting ${attempt}0s..."
+              sleep $((attempt * 10))
+            done
+          done
