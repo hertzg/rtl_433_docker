@@ -71,4 +71,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create multi-arch manifests
         run: |
-          echo '${{ inputs.manifestCmds }}' | xargs -P 4 -d '\n' -I {} sh -c '{}'
+          echo '${{ inputs.manifestCmds }}' | xargs -P 1 -d '\n' -I {} sh -c '{}'
