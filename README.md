@@ -212,14 +212,12 @@ services:
 
 ## Supported Platforms
 
-| Architecture | Alpine | Debian |
-|--------------|--------|--------|
-| `linux/amd64` | ✅ | ✅ |
-| `linux/arm64` | ✅ | ✅ |
-| `linux/arm/v7` | ✅ | ✅ |
-| `linux/arm/v6` | ✅ | ❌ |
-| `linux/ppc64le` | ✅ | ✅ |
-| `linux/s390x` | ❌ | ✅ |
+| Architecture | Alpine | Debian | Devices |
+|--------------|--------|--------|---------|
+| `linux/amd64` | ✅ | ✅ | x86_64 PCs, servers |
+| `linux/arm64` | ✅ | ✅ | Raspberry Pi 4/5, Apple Silicon |
+| `linux/arm/v7` | ✅ | ✅ | Raspberry Pi 2/3 (32-bit) |
+| `linux/arm/v6` | ✅ | ❌ | Raspberry Pi Zero/1 |
 
 ## Troubleshooting
 

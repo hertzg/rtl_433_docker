@@ -64,7 +64,6 @@ const tasks = [...alpineTasks, ...debianTasks].sort(
 interface TaskGroup {
   [key: string]: {
     tasks: TaskGroupEntry[];
-    manifests: string;
   };
 }
 
@@ -79,23 +78,10 @@ interface TaskGroupEntry {
   platforms: string;
   cacheFrom: string;
   cacheTo: string;
+  // For manifest creation - each job creates/updates the multi-arch manifest
+  manifestTags: string;
+  manifestGroup: string;
 }
-
-const generateRunAfterScript = (task: BuildTask) => {
-  const lines: string[] = [];
-  for (const repo of REPOS) {
-    for (const tag of task.tags) {
-      const arches = task.platforms.map(
-        (platform) => `${repo}:${tag}-${tagify(platform)}`
-      );
-      lines.push(
-        `docker buildx imagetools create -t ${repo}:${tag} ${arches.join(" ")}`
-      );
-    }
-  }
-
-  return lines;
-};
 
 const platformToRunner = (platform: string) => {
   const [, arch] = platform.split("/");
@@ -112,12 +98,15 @@ const groups: TaskGroup = {};
 for (const task of tasks) {
   const groupKey = `${task.name}`;
   if (!groups[groupKey]) {
-    const runAfter = generateRunAfterScript(task);
     groups[groupKey] = {
       tasks: [],
-      manifests: runAfter.join("\n"),
     };
   }
+
+  // Generate manifest tags: repo:tag for all repos and tags
+  const manifestTags = REPOS.flatMap((repo) =>
+    task.tags.map((tag) => `${repo}:${tag}`)
+  );
 
   for (const platform of task.platforms) {
     const suffixedTags = task.tags.map((tag) => `${tag}-${tagify(platform)}`);
@@ -133,15 +122,24 @@ for (const task of tasks) {
       platforms: stringifyPlatforms([platform]),
       cacheFrom: `${task.cacheFrom}-${platformSuffix}`,
       cacheTo: `${task.cacheTo}-${platformSuffix},mode=max`,
+      // Manifest info for concurrent manifest creation
+      manifestTags: manifestTags.join("\n"),
+      manifestGroup: groupKey,
     });
   }
 }
 
 const groupEntries = Object.entries(groups).map(([key, group]) => {
+  // Extract manifest info from first task (all tasks in group share same manifest)
+  const firstTask = group.tasks[0];
+  // Get all platform suffixes for this group (for manifest creation)
+  const platformSuffixes = group.tasks.map((t) => tagify(t.name)).join(" ");
   return {
     name: key,
     tasks: group.tasks,
-    manifests: group.manifests,
+    manifestGroup: firstTask?.manifestGroup ?? key,
+    manifestTags: firstTask?.manifestTags ?? "",
+    manifestPlatforms: platformSuffixes,
   };
 });
 setOutput("matrix", groupEntries);

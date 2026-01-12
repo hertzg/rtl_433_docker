@@ -96,8 +96,6 @@ export const createAlpineBuildTasks = (
           "linux/arm64/v8",
           "linux/arm/v6",
           "linux/arm/v7",
-          "linux/ppc64le",
-          // "linux/386",
         ],
         cacheFrom: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=alpine-${alpineVersion}-${gitRef}`,

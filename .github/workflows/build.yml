@@ -36,5 +36,7 @@ jobs:
     with:
       tasks: ${{ toJson(matrix.tasks) }}
       push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'schedule' }}
-      manifests: ${{ matrix.manifests }}
+      manifestGroup: ${{ matrix.manifestGroup }}
+      manifestTags: ${{ matrix.manifestTags }}
+      manifestPlatforms: ${{ matrix.manifestPlatforms }}
     secrets: inherit

@@ -99,10 +99,8 @@ export const createDebianBuildTasks = (
         },
         platforms: [
           "linux/amd64",
-          "linux/arm/v7",
           "linux/arm64/v8",
-          "linux/ppc64le",
-          "linux/s390x",
+          "linux/arm/v7",
         ],
         cacheFrom: `type=gha,scope=debian-${debianVersion}-${gitRef}`,
         cacheTo: `type=gha,scope=debian-${debianVersion}-${gitRef}`,
