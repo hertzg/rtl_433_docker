@@ -10,18 +10,6 @@ on:
         required: true
         type: boolean
         default: false
-      manifestGroup:
-        required: false
-        type: string
-        default: ""
-      manifestTags:
-        required: false
-        type: string
-        default: ""
-      manifestPlatforms:
-        required: false
-        type: string
-        default: ""
 
 jobs:
   build:
@@ -61,62 +49,11 @@ jobs:
           cache-from: ${{ matrix.cacheFrom }}
           cache-to: ${{ matrix.cacheTo }}
           tags: ${{ matrix.tags }}
-
-  # Single manifest job per group - runs after all platform builds complete
-  # Concurrency ensures only one manifest update runs at a time per group
-  manifest:
-    name: 📦 Manifest
-    needs: build
-    if: ${{ inputs.push && inputs.manifestTags != '' }}
-    runs-on: ubuntu-latest
-    concurrency:
-      group: manifest-${{ inputs.manifestGroup }}
-      cancel-in-progress: false
-    steps:
-      - uses: docker/setup-buildx-action@v3
-        with:
-          version: latest
-          buildkitd-config-inline: |
-            [registry."docker.io"]
-              mirrors = ["mirror.gcr.io"]
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create multi-arch manifests
-        env:
-          MANIFEST_TAGS: ${{ inputs.manifestTags }}
-          PLATFORMS: ${{ inputs.manifestPlatforms }}
+      - name: Create/Amend multi-arch manifest
+        if: ${{ inputs.push }}
         run: |
-          # Process each manifest tag
-          echo "$MANIFEST_TAGS" | while read -r manifest_tag; do
-            [ -z "$manifest_tag" ] && continue
-
-            echo "Processing manifest: $manifest_tag"
-
-            # Collect all available platform images
-            SOURCES=""
-            for plat in $PLATFORMS; do
-              source_tag="${manifest_tag}-${plat}"
-              if docker buildx imagetools inspect "$source_tag" >/dev/null 2>&1; then
-                SOURCES="$SOURCES $source_tag"
-                echo "  Found: $source_tag"
-              else
-                echo "  Missing: $source_tag"
-              fi
-            done
-
-            # Create manifest with all sources
-            if [ -n "$SOURCES" ]; then
-              echo "  Creating manifest: $manifest_tag"
-              docker buildx imagetools create -t "$manifest_tag" $SOURCES
-            else
-              echo "  Error: no source images found for $manifest_tag"
-              exit 1
-            fi
+          # Each command includes retry loop with verification
+          echo '${{ matrix.manifestCmds }}' | while IFS= read -r cmd; do
+            [ -z "$cmd" ] && continue
+            eval "$cmd"
           done

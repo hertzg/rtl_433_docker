@@ -61,12 +61,6 @@ const tasks = [...alpineTasks, ...debianTasks].sort(
   (a, b) => a.name.localeCompare(b.name) * -1
 );
 
-interface TaskGroup {
-  [key: string]: {
-    tasks: TaskGroupEntry[];
-  };
-}
-
 interface TaskGroupEntry {
   name: string;
   gitRef: string;
@@ -78,40 +72,42 @@ interface TaskGroupEntry {
   platforms: string;
   cacheFrom: string;
   cacheTo: string;
-  // For manifest creation - each job creates/updates the multi-arch manifest
-  manifestTags: string;
-  manifestGroup: string;
+  // Manifest amend commands for this platform
+  manifestCmds: string;
 }
 
 const platformToRunner = (platform: string) => {
   const [, arch] = platform.split("/");
-
-  // Use native ARM64 runners for arm64 builds (no QEMU needed)
-  if (arch === "arm64") {
-    return "ubuntu-24.04-arm";
-  }
-
+  if (arch === "arm64") return "ubuntu-24.04-arm";
   return "ubuntu-24.04";
 };
 
-const groups: TaskGroup = {};
-for (const task of tasks) {
-  const groupKey = `${task.name}`;
-  if (!groups[groupKey]) {
-    groups[groupKey] = {
-      tasks: [],
-    };
-  }
+// Generate manifest amend command for a single platform
+// Includes retry with verification to handle race conditions
+const generateManifestCmd = (repo: string, tag: string, platformSuffix: string): string => {
+  const manifest = `${repo}:${tag}`;
+  const platformImg = `${manifest}-${platformSuffix}`;
+  // Retry loop: create/amend manifest, verify platform is included, retry if not
+  return `for i in 1 2 3 4 5; do docker buildx imagetools create -t ${manifest} ${manifest} ${platformImg} 2>/dev/null || docker buildx imagetools create -t ${manifest} ${platformImg}; docker buildx imagetools inspect ${manifest} --raw | grep -q ${platformSuffix} && break; sleep $i; done`;
+};
 
-  // Generate manifest tags: repo:tag for all repos and tags
-  const manifestTags = REPOS.flatMap((repo) =>
-    task.tags.map((tag) => `${repo}:${tag}`)
-  );
+const groups: Record<string, TaskGroupEntry[]> = {};
+for (const task of tasks) {
+  const groupKey = task.name;
+  if (!groups[groupKey]) {
+    groups[groupKey] = [];
+  }
 
   for (const platform of task.platforms) {
     const suffixedTags = task.tags.map((tag) => `${tag}-${tagify(platform)}`);
     const platformSuffix = tagify(platform);
-    groups[groupKey].tasks.push({
+
+    // Generate manifest amend commands for this platform
+    const manifestCmds = REPOS.flatMap((repo) =>
+      task.tags.map((tag) => generateManifestCmd(repo, tag, platformSuffix))
+    ).join("\n");
+
+    groups[groupKey].push({
       name: platform,
       gitRef: task.gitRef,
       context: task.context,
@@ -122,24 +118,13 @@ for (const task of tasks) {
       platforms: stringifyPlatforms([platform]),
       cacheFrom: `${task.cacheFrom}-${platformSuffix}`,
       cacheTo: `${task.cacheTo}-${platformSuffix},mode=max`,
-      // Manifest info for concurrent manifest creation
-      manifestTags: manifestTags.join("\n"),
-      manifestGroup: groupKey,
+      manifestCmds,
     });
   }
 }
 
-const groupEntries = Object.entries(groups).map(([key, group]) => {
-  // Extract manifest info from first task (all tasks in group share same manifest)
-  const firstTask = group.tasks[0];
-  // Get all platform suffixes for this group (for manifest creation)
-  const platformSuffixes = group.tasks.map((t) => tagify(t.name)).join(" ");
-  return {
-    name: key,
-    tasks: group.tasks,
-    manifestGroup: firstTask?.manifestGroup ?? key,
-    manifestTags: firstTask?.manifestTags ?? "",
-    manifestPlatforms: platformSuffixes,
-  };
-});
+const groupEntries = Object.entries(groups).map(([key, tasks]) => ({
+  name: key,
+  tasks,
+}));
 setOutput("matrix", groupEntries);
