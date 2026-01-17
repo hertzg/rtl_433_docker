@@ -20,7 +20,7 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: 2.x
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: config
         run: deno run --allow-net --allow-read --allow-write --allow-env src/main.ts
 
