@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: 2.x
       - uses: actions/checkout@v4
       - id: config
         run: deno run --allow-net --allow-read --allow-write --allow-env src/main.ts
