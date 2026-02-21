@@ -65,7 +65,7 @@ Bus 001 Device 003: ID 0bda:2838 Realtek Semiconductor Corp. RTL2838 DVB-T
 
 The device path is `/dev/bus/usb/<bus>/<device>` → `/dev/bus/usb/001/003`
 
-> **Note:** Device paths may change on reboot or replug. See [#14](https://github.com/hertzg/rtl_433_docker/issues/14) for details. For persistent identification, use [serial numbers](#multiple-devices).
+> **Note:** Device paths may change on reboot or replug. See [#14](https://github.com/hertzg/rtl_433_docker/issues/14) for details. For persistent identification, use [serial numbers](#stable-device-selection).
 
 ### Basic Usage
 
