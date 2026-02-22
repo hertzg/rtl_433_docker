@@ -195,12 +195,12 @@ services:
       - /dev/bus/usb  # Pass entire bus for stable device discovery
     environment:
       - TZ=Europe/London
-    command:
-      - -d :00000001  # Select device by serial (stable across reboots)
-      - -M time:unix:usec:utc
-      - -M protocol
-      - -F mqtt://mosquitto:1883,retain=1
-      - -F influx://influxdb:8086/write?db=rtl433
+    command: >-
+      -d :00000001
+      -M time:unix:usec:utc
+      -M protocol
+      -F mqtt://mosquitto:1883,retain=1
+      -F influx://influxdb:8086/write?db=rtl433
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -219,8 +219,8 @@ services:
     image: hertzg/rtl_433:latest
     devices:
       - /dev/bus/usb/001/003  # May change on reboot
-    command:
-      - -F mqtt://mosquitto:1883
+    command: >-
+      -F mqtt://mosquitto:1883
 ```
 
 ## Supported Platforms
