@@ -57,9 +57,9 @@ jobs:
           cache-from: ${{ matrix.cacheFrom }}
           cache-to: ${{ matrix.cacheTo }}
           tags: ${{ matrix.tags }}
-          # The default provenance attestation records the build's start time,
-          # so every nightly run would publish a new index digest for every tag
-          # even when the image itself is unchanged.
+          # The default provenance attestation records the workflow run URL,
+          # the commit and the build times, so every nightly run would publish
+          # a new index digest for every tag even when the image is unchanged.
           provenance: false
 
   manifest:
