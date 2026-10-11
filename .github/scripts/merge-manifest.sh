@@ -11,12 +11,13 @@ target="$1"
 shift
 
 # Sorted digests of the image manifests in the given indexes, ignoring attestations.
+# Prints nothing when any ref can't be read or isn't an index, so the caller
+# publishes instead of skipping on partial data.
 image_digests() {
-  for ref in "$@"; do
-    docker buildx imagetools inspect --raw "$ref"
-  done | jq -rs '[.[].manifests[]?
+  raw=$(for ref in "$@"; do docker buildx imagetools inspect --raw "$ref" || exit 1; done) || return 0
+  printf '%s' "$raw" | jq -rs 'if all(has("manifests")) then [.[].manifests[]
     | select(.annotations["vnd.docker.reference.type"] != "attestation-manifest")
-    | .digest] | sort | join(" ")'
+    | .digest] | sort | join(" ") else "" end'
 }
 
 wanted=$(image_digests "$@")
