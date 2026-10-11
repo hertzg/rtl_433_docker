@@ -83,11 +83,11 @@ const platformToRunner = (platform: string) => {
   return "ubuntu-24.04";
 };
 
-// Generate GHCR manifest create command for a tag across all platforms
+// Generate GHCR manifest merge command for a tag across all platforms
 const generateGhcrManifestCmd = (tag: string, platforms: string[]): string => {
   const manifest = `${GHCR_REPO}:${tag}`;
   const platformImages = platforms.map((p) => `${manifest}-${tagify(p)}`).join(" ");
-  return `docker buildx imagetools create -t ${manifest} ${platformImages}`;
+  return `.github/scripts/merge-manifest.sh ${manifest} ${platformImages}`;
 };
 
 // Generate skopeo copy command to copy from GHCR to Docker Hub
